@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schwingungs-Simulator | Physik Interaktiv</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Schwingungs-Simulator</h1>
+            <p class="subtitle">Harmonische Schwingungen visualisiert</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="kinematik.html" class="nav-link">Kinematik</a>
+                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
+                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
+                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="energie.html" class="nav-link">Energie</a>
+                <a href="impuls.html" class="nav-link">Impuls</a>
+                <a href="freierfall.html" class="nav-link">Freier Fall</a>
+                <a href="wurf.html" class="nav-link">Wurf</a>
+                <a href="schwingung.html" class="nav-link active">Schwingung</a>
+                <a href="formelsammlung.html" class="nav-link">Formeln</a>
+                <a href="rechner.html" class="nav-link">Rechner</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Harmonische Schwingungen</h2>
+            <p>Visualisieren Sie Federpendel und harmonische Oszillatoren mit verschiedenen Parametern.</p>
+        </section>
+
+        <div class="canvas-container">
+            <h3>Federpendel</h3>
+            <canvas id="schwingungCanvas" width="800" height="400"></canvas>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="amplitude">Amplitude a₀ (m): <span id="amplitudeValue">0.5</span></label>
+                    <input type="range" id="amplitude" min="0.1" max="2" step="0.1" value="0.5" oninput="updateSchwingung()">
+                </div>
+
+                <div class="control-group">
+                    <label for="frequenz">Frequenz f (Hz): <span id="frequenzValue">1.0</span></label>
+                    <input type="range" id="frequenz" min="0.1" max="3" step="0.1" value="1.0" oninput="updateSchwingung()">
+                </div>
+
+                <div class="control-group">
+                    <label for="daempfung">Dämpfung: <span id="daempfungValue">0.0</span></label>
+                    <input type="range" id="daempfung" min="0" max="0.5" step="0.05" value="0" oninput="updateSchwingung()">
+                </div>
+
+                <div class="control-group">
+                    <label for="phase">Phasenverschiebung φ (°): <span id="phaseValue">0</span></label>
+                    <input type="range" id="phase" min="0" max="360" value="0" oninput="updateSchwingung()">
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="startSchwingung()">Start</button>
+            <button class="btn-primary" onclick="stopSchwingung()">Stopp</button>
+            <button class="btn-primary" onclick="resetSchwingung()">Zurücksetzen</button>
+        </div>
+
+        <div class="calculator-grid" style="margin-top: 2rem;">
+            <div class="calculator-card">
+                <h3>Elongation-Zeit-Diagramm</h3>
+                <canvas id="elongationDiagramm" width="350" height="300"></canvas>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Phasendiagramm (v-x)</h3>
+                <canvas id="phasenDiagramm" width="350" height="300"></canvas>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Aktuelle Werte</h3>
+                <div id="schwingungWerte">
+                    <p>Starten Sie die Simulation...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-list" style="margin-top: 2rem;">
+            <div class="formula-item">
+                <h4>Verwendete Formeln</h4>
+                <div class="formula">
+                    <strong>Harmonische Schwingung:</strong><br>
+                    y(t) = a₀ · e^(-δt) · sin(ωt + φ)<br>
+                    δ = Dämpfungskonstante<br><br>
+                    <strong>Kreisfrequenz:</strong><br>
+                    ω = 2π · f<br><br>
+                    <strong>Periode:</strong><br>
+                    T = 1 / f = 2π / ω<br><br>
+                    <strong>Geschwindigkeit:</strong><br>
+                    v(t) = y'(t) = a₀ · ω · e^(-δt) · cos(ωt + φ) − δ · y(t)<br><br>
+                    <strong>Federpendel:</strong><br>
+                    ω = √(D/m)<br>
+                    D = Federkonstante, m = Masse
+                </div>
+                <p class="description">
+                    Eine harmonische Schwingung entsteht, wenn eine rücktreibende Kraft proportional zur Auslenkung wirkt.
+                    Bei Dämpfung nimmt die Amplitude mit der Zeit exponentiell ab.
+                    Das Phasendiagramm zeigt die Beziehung zwischen Geschwindigkeit und Auslenkung.
+                </p>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        let animationId = null;
+        let a0 = 0.5;
+        let f = 1.0;
+        let omega = 2 * Math.PI * f;
+        let delta = 0;
+        let phi = 0;
+        let time = 0;
+        let elongationDaten = [];
+        let maxDataPoints = 10000;
+
+        function updateSchwingung() {
+            a0 = parseFloat(document.getElementById('amplitude').value);
+            f = parseFloat(document.getElementById('frequenz').value);
+            delta = parseFloat(document.getElementById('daempfung').value);
+            const phiGrad = parseFloat(document.getElementById('phase').value);
+            phi = phiGrad * Math.PI / 180;
+            omega = 2 * Math.PI * f;
+
+            document.getElementById('amplitudeValue').textContent = a0.toFixed(1);
+            document.getElementById('frequenzValue').textContent = f.toFixed(1);
+            document.getElementById('daempfungValue').textContent = delta.toFixed(2);
+            document.getElementById('phaseValue').textContent = phiGrad.toFixed(0);
+        }
+
+        function resetSchwingung() {
+            stopSchwingung();
+            time = 0;
+            elongationDaten = [];
+            zeichneSchwingung();
+            zeichneDiagramme();
+        }
+
+        function startSchwingung() {
+            if (animationId) return;
+
+            const fps = 60;
+            const dt = 1 / fps;
+
+            animationId = setInterval(() => {
+                time += dt;
+
+                const y = a0 * Math.exp(-delta * time) * Math.sin(omega * time + phi);
+                const v = a0 * omega * Math.exp(-delta * time) * Math.cos(omega * time + phi)
+                        - delta * y;
+
+                elongationDaten.push({ t: time, y: y, v: v });
+                if (elongationDaten.length > maxDataPoints) {
+                    elongationDaten.shift();
+                }
+
+                zeichneSchwingung();
+                zeichneDiagramme();
+                aktualisiereWerte();
+            }, 1000 / fps);
+        }
+
+        function stopSchwingung() {
+            if (animationId) {
+                clearInterval(animationId);
+                animationId = null;
+            }
+        }
+
+        function zeichneSchwingung() {
+            const canvas = document.getElementById('schwingungCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // Aktuelle Position
+            const y = time > 0 ?
+                a0 * Math.exp(-delta * time) * Math.sin(omega * time + phi) :
+                a0 * Math.sin(phi);
+            const scale = 100; // Pixel pro Meter
+
+            // Feder zeichnen
+            const federStartY = 50;
+            const federEndY = centerY + y * scale;
+            const federX = centerX;
+
+            // Befestigung
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(federX - 50, federStartY - 10, 100, 10);
+
+            // Feder (Zickzack)
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(federX, federStartY);
+
+            const federLaenge = federEndY - federStartY;
+            const windungen = 15;
+            const amplitude_feder = 20;
+
+            for (let i = 0; i <= windungen; i++) {
+                const yPos = federStartY + (i / windungen) * federLaenge;
+                const xPos = federX + (i % 2 === 0 ? amplitude_feder : -amplitude_feder);
+                ctx.lineTo(xPos, yPos);
+            }
+            ctx.lineTo(federX, federEndY);
+            ctx.stroke();
+
+            // Masse
+            const masseGroesse = 40;
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(federX - masseGroesse/2, federEndY, masseGroesse, masseGroesse);
+            ctx.strokeStyle = '#991b1b';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(federX - masseGroesse/2, federEndY, masseGroesse, masseGroesse);
+
+            // Nulllinie (gestrichelt)
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(50, centerY);
+            ctx.lineTo(width - 50, centerY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Ruhelage-Markierung
+            ctx.fillStyle = '#64748b';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('Ruhelage', width - 100, centerY + 5);
+
+            // Amplituden-Linien
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+            const ampAktuell = a0 * Math.exp(-delta * time);
+            ctx.beginPath();
+            ctx.moveTo(50, centerY - ampAktuell * scale);
+            ctx.lineTo(width - 50, centerY - ampAktuell * scale);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(50, centerY + ampAktuell * scale);
+            ctx.lineTo(width - 50, centerY + ampAktuell * scale);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Skala
+            ctx.fillStyle = '#64748b';
+            ctx.font = '11px Arial';
+            ctx.textAlign = 'right';
+            for (let i = -2; i <= 2; i += 0.5) {
+                const yPos = centerY - i * scale;
+                ctx.fillText(`${i.toFixed(1)}m`, 45, yPos + 4);
+            }
+
+            // Info-Text
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText(`y = ${y.toFixed(3)} m`, 20, 30);
+            ctx.fillText(`t = ${time.toFixed(2)} s`, 20, 50);
+            ctx.fillText(`T = ${(1/f).toFixed(2)} s`, 20, 70);
+        }
+
+        function zeichneDiagramme() {
+            zeichneElongationDiagramm();
+            zeichnePhasenDiagramm();
+        }
+
+        function zeichneElongationDiagramm() {
+            const canvas = document.getElementById('elongationDiagramm');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const padding = 40;
+            const graphWidth = width - 2 * padding;
+            const graphHeight = height - 2 * padding;
+
+            // Achsen
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // Nulllinie
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(padding, height / 2);
+            ctx.lineTo(width - padding, height / 2);
+            ctx.stroke();
+
+            // Beschriftung
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Zeit (s)', width / 2, height - 5);
+            ctx.save();
+            ctx.translate(15, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Elongation (m)', 0, 0);
+            ctx.restore();
+
+            if (elongationDaten.length < 2) return;
+
+            // Skalierung
+            const maxT = Math.max(...elongationDaten.map(d => d.t));
+            const maxY = Math.max(...elongationDaten.map(d => Math.abs(d.y)), a0);
+            const scaleX = graphWidth / Math.max(maxT, 1);
+            const scaleY = graphHeight / (2 * maxY);
+
+            // Kurve zeichnen
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            elongationDaten.forEach((d, i) => {
+                const x = padding + d.t * scaleX;
+                const y = height / 2 - d.y * scaleY;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+        }
+
+        function zeichnePhasenDiagramm() {
+            const canvas = document.getElementById('phasenDiagramm');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const graphSize = Math.min(width, height) - 80;
+
+            // Achsen
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(40, centerY);
+            ctx.lineTo(width - 40, centerY);
+            ctx.moveTo(centerX, 40);
+            ctx.lineTo(centerX, height - 40);
+            ctx.stroke();
+
+            // Beschriftung
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Auslenkung y', width / 2, height - 5);
+            ctx.save();
+            ctx.translate(15, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Geschwindigkeit v', 0, 0);
+            ctx.restore();
+
+            if (elongationDaten.length < 2) return;
+
+            // Skalierung
+            const maxY = Math.max(...elongationDaten.map(d => Math.abs(d.y)), a0);
+            const maxV = Math.max(...elongationDaten.map(d => Math.abs(d.v)), a0 * omega);
+            const scaleY = graphSize / (2 * maxY);
+            const scaleV = graphSize / (2 * maxV);
+
+            // Phasenkurve (Ellipse bei ungedämpfter Schwingung)
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            elongationDaten.forEach((d, i) => {
+                const x = centerX + d.y * scaleY;
+                const y = centerY - d.v * scaleV;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Aktueller Punkt
+            if (elongationDaten.length > 0) {
+                const current = elongationDaten[elongationDaten.length - 1];
+                const x = centerX + current.y * scaleY;
+                const y = centerY - current.v * scaleV;
+
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        function aktualisiereWerte() {
+            const y = a0 * Math.exp(-delta * time) * Math.sin(omega * time + phi);
+            const v = a0 * omega * Math.exp(-delta * time) * Math.cos(omega * time + phi)
+                    - delta * y;
+            const a = -omega * omega * y - 2 * delta * v;
+            const T = 1 / f;
+            const ampAktuell = a0 * Math.exp(-delta * time);
+
+            document.getElementById('schwingungWerte').innerHTML = `
+                <div class="result">
+                    <strong>Auslenkung:</strong> y = ${y.toFixed(4)} m<br>
+                    <strong>Geschwindigkeit:</strong> v = ${v.toFixed(4)} m/s<br>
+                    <strong>Beschleunigung:</strong> a = ${a.toFixed(4)} m/s²<br><br>
+                    <strong>Aktuelle Amplitude:</strong> ${ampAktuell.toFixed(4)} m<br>
+                    <strong>Periode:</strong> T = ${T.toFixed(3)} s<br>
+                    <strong>Frequenz:</strong> f = ${f.toFixed(2)} Hz<br>
+                    <strong>Kreisfrequenz:</strong> ω = ${omega.toFixed(2)} rad/s
+                </div>
+            `;
+        }
+
+        // Initialisierung
+        updateSchwingung();
+        resetSchwingung();
+    </script>
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kräfte-Simulator | Physik Interaktiv</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Kräfte-Simulator</h1>
+            <p class="subtitle">Interaktive Visualisierung von Kräften und Kräftegleichgewicht</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="kinematik.html" class="nav-link">Kinematik</a>
+                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
+                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
+                <a href="kraefte.html" class="nav-link active">Kräfte</a>
+                <a href="energie.html" class="nav-link">Energie</a>
+                <a href="impuls.html" class="nav-link">Impuls</a>
+                <a href="freierfall.html" class="nav-link">Freier Fall</a>
+                <a href="wurf.html" class="nav-link">Wurf</a>
+                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="formelsammlung.html" class="nav-link">Formeln</a>
+                <a href="rechner.html" class="nav-link">Rechner</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Kräfte visualisieren</h2>
+            <p>Verstehen Sie Kräfte, Reibung und schiefe Ebenen durch interaktive Simulationen.</p>
+        </section>
+
+        <!-- Schiefe Ebene -->
+        <div class="canvas-container">
+            <h3>Schiefe Ebene</h3>
+            <canvas id="ebeneCanvas" width="800" height="600"></canvas>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="masse">Masse (kg): <span id="masseValue">10</span></label>
+                    <input type="range" id="masse" min="1" max="50" value="10" oninput="updateEbene()">
+                </div>
+
+                <div class="control-group">
+                    <label for="winkel">Neigungswinkel (°): <span id="winkelValue">30</span></label>
+                    <input type="range" id="winkel" min="0" max="60" value="30" oninput="updateEbene()">
+                </div>
+
+                <div class="control-group">
+                    <label for="reibung">Reibungskoeffizient μ: <span id="reibungValue">0.2</span></label>
+                    <input type="range" id="reibung" min="0" max="1" step="0.05" value="0.2" oninput="updateEbene()">
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="toggleKraefte()">Kräfte ein/aus</button>
+        </div>
+
+        <!-- Berechnete Werte -->
+        <div class="calculator-grid" style="margin-top: 2rem;">
+            <div class="calculator-card">
+                <h3>Berechnete Kräfte</h3>
+                <div id="kraefteWerte">
+                    <p>Passen Sie die Parameter an...</p>
+                </div>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Kräfteparallelogramm</h3>
+                <canvas id="vektorCanvas" width="350" height="300"></canvas>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Bewegungszustand</h3>
+                <div id="bewegungsInfo">
+                    <p>Wird berechnet...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formeln -->
+        <div class="formula-list" style="margin-top: 2rem;">
+            <div class="formula-item">
+                <h4>Verwendete Formeln</h4>
+                <div class="formula">
+                    Gewichtskraft: F<sub>G</sub> = m · g<br>
+                    Normalkraft: F<sub>N</sub> = F<sub>G</sub> · cos(α)<br>
+                    Hangabtriebskraft: F<sub>H</sub> = F<sub>G</sub> · sin(α)<br>
+                    Reibungskraft: F<sub>R</sub> = min(F<sub>H</sub>, μ · F<sub>N</sub>)<br>
+                    Resultierende Kraft: F<sub>res</sub> = F<sub>H</sub> − F<sub>R</sub>
+                </div>
+                <p class="description">
+                    Bei einer schiefen Ebene wirkt die Gewichtskraft senkrecht nach unten.
+                    Sie wird zerlegt in die Normalkraft (senkrecht zur Ebene) und die Hangabtriebskraft (parallel zur Ebene).<br>
+                    <strong>Haftreibung:</strong> Wenn F<sub>H</sub> ≤ μ·F<sub>N</sub>, dann F<sub>R</sub> = F<sub>H</sub> (Körper ruht, F<sub>res</sub> = 0)<br>
+                    <strong>Gleitreibung:</strong> Wenn F<sub>H</sub> > μ·F<sub>N</sub>, dann F<sub>R</sub> = μ·F<sub>N</sub> (Körper gleitet)
+                </p>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        const g = 9.81; // Erdbeschleunigung
+        let showKraefte = true;
+
+        function updateEbene() {
+            const m = parseFloat(document.getElementById('masse').value);
+            const alpha = parseFloat(document.getElementById('winkel').value);
+            const mu = parseFloat(document.getElementById('reibung').value);
+
+            document.getElementById('masseValue').textContent = m.toFixed(0);
+            document.getElementById('winkelValue').textContent = alpha.toFixed(0);
+            document.getElementById('reibungValue').textContent = mu.toFixed(2);
+
+            zeichneEbene(m, alpha, mu);
+            zeichneVektordiagramm(m, alpha, mu);
+            berechneKraefte(m, alpha, mu);
+        }
+
+        function zeichneEbene(m, alpha, mu) {
+            const canvas = document.getElementById('ebeneCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Resultierende Kraft oben anzeigen
+            const rad = alpha * Math.PI / 180;
+            const FG = m * g;
+            const FN = FG * Math.cos(rad);
+            const FH = FG * Math.sin(rad);
+            const FR_max = mu * FN;
+            const FR = Math.min(FH, FR_max);
+            const Fres = FH - FR;
+
+            // F_res Anzeige oben im Canvas mit visueller Darstellung
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('Resultierende Kraft:', 20, 25);
+
+            if (Math.abs(Fres) > 0.1) {
+                // Visualisierung: F_H - F_R = F_res
+                const vizStartX = 200;
+                const vizY = 30;
+                const arrowScale = 2; // Pixel pro Newton
+
+                // F_H (blau, nach rechts)
+                const FH_len = FH * arrowScale;
+                drawArrow(ctx, vizStartX, vizY, vizStartX + FH_len, vizY, '#3b82f6', 2);
+                ctx.fillStyle = '#3b82f6';
+                ctx.font = '11px Arial';
+                ctx.fillText(`F_H = ${FH.toFixed(1)} N`, vizStartX + FH_len / 2 - 30, vizY - 8);
+
+                // F_R (orange, entgegengesetzt, vom Ende von F_H zurück)
+                const FR_len = FR * arrowScale;
+                const FR_endX = vizStartX + FH_len - FR_len;
+                drawArrow(ctx, vizStartX + FH_len, vizY, FR_endX, vizY, '#f59e0b', 2);
+                ctx.fillStyle = '#f59e0b';
+                ctx.fillText(`F_R = ${FR.toFixed(1)} N`, vizStartX + FH_len - FR_len / 2 - 30, vizY + 18);
+
+                // Verbindungslinie von Start zu Ende (F_res)
+                ctx.setLineDash([3, 2]);
+                ctx.strokeStyle = '#8b5cf6';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(vizStartX, vizY + 25);
+                ctx.lineTo(FR_endX, vizY + 25);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // F_res Beschriftung darunter
+                ctx.fillStyle = '#8b5cf6';
+                ctx.font = 'bold 13px Arial';
+                ctx.fillText(`F_res = ${Fres.toFixed(1)} N`, vizStartX + (FR_endX - vizStartX) / 2 - 40, vizY + 38);
+
+                // Richtungshinweis rechts
+                ctx.fillStyle = '#64748b';
+                ctx.font = '11px Arial';
+                ctx.fillText('(den Hang hinab)', FR_endX + 10, vizY + 5);
+            } else {
+                ctx.fillStyle = '#10b981';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText('F_res = 0 N (Gleichgewicht)', 200, 30);
+
+                ctx.fillStyle = '#64748b';
+                ctx.font = '12px Arial';
+                ctx.fillText(`F_H = F_R = ${FH.toFixed(1)} N`, 200, 48);
+            }
+
+            // Koordinatensystem
+            const startX = 120;
+            const startY = height - 120;
+            const laenge = 500;
+
+            const endX = startX + laenge * Math.cos(rad);
+            const endY = startY - laenge * Math.sin(rad);
+
+            // Boden
+            ctx.fillStyle = '#e5e7eb';
+            ctx.fillRect(0, startY, width, height - startY);
+
+            // Schiefe Ebene
+            ctx.fillStyle = '#d1d5db';
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.lineTo(endX, startY);
+            ctx.closePath();
+            ctx.fill();
+
+            // Rand der Ebene
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            // Objekt (Kiste) auf der Ebene
+            const objektMitte = 0.3; // 30% den Hang hinauf
+            const objektX = startX + laenge * objektMitte * Math.cos(rad);
+            const objektY = startY - laenge * objektMitte * Math.sin(rad);
+            const kastenGroesse = 50;
+
+            // Kiste zeichnen (rotiert)
+            ctx.save();
+            ctx.translate(objektX, objektY);
+            ctx.rotate(-rad);
+
+            ctx.fillStyle = '#3b82f6';
+            ctx.fillRect(-kastenGroesse/2, -kastenGroesse/2, kastenGroesse, kastenGroesse);
+            ctx.strokeStyle = '#1e40af';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(-kastenGroesse/2, -kastenGroesse/2, kastenGroesse, kastenGroesse);
+
+            // Masse beschriften
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${m} kg`, 0, 5);
+
+            ctx.restore();
+
+            if (showKraefte) {
+                // Kräfte einzeichnen
+                const FG = m * g;
+                const FN = FG * Math.cos(rad);
+                const FH = FG * Math.sin(rad);
+
+                // Physikalisch korrekte Reibungskraft:
+                // - Haftreibung: FR = FH (solange FH <= mu * FN)
+                // - Gleitreibung: FR = mu * FN (wenn FH > mu * FN)
+                const FR_max = mu * FN;
+                const FR = Math.min(FH, FR_max);
+                const Fres = FH - FR;
+
+                // Dynamische Skalierung basierend auf größter Kraft
+                const maxKraft = Math.max(FG, FN, FH, FR, Math.abs(Fres), 20); // min 20N für Skalierung
+                const scale = Math.min(150 / maxKraft, 3.0); // max 150 pixel, max Faktor 3.0
+
+                // Gewichtskraft (nach unten, rot)
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 3;
+                drawArrow(ctx, objektX, objektY, objektX, objektY + FG * scale, '#ef4444');
+                ctx.fillStyle = '#ef4444';
+                ctx.font = '12px Arial';
+                ctx.fillText(`F_G = ${FG.toFixed(1)} N`, objektX + 20, objektY + FG * scale / 2);
+
+                // Normalkomponente (senkrecht zur Ebene, zur Ebene hin, grün)
+                const FN_x = objektX + FN * scale * Math.sin(rad);
+                const FN_y = objektY + FN * scale * Math.cos(rad);
+                drawArrow(ctx, objektX, objektY, FN_x, FN_y, '#10b981');
+                ctx.fillStyle = '#10b981';
+                ctx.fillText(`F_N = ${FN.toFixed(1)} N`, FN_x + 10, FN_y + 20);
+
+                // Hangabtriebskraft (parallel zur Ebene, den Hang hinab, blau) - nur bei α > 0
+                if (FH > 0.1) {
+                    const FH_x = objektX - FH * scale * Math.cos(rad);
+                    const FH_y = objektY + FH * scale * Math.sin(rad);
+                    drawArrow(ctx, objektX, objektY, FH_x, FH_y, '#3b82f6');
+                    ctx.fillStyle = '#3b82f6';
+                    ctx.fillText(`F_H = ${FH.toFixed(1)} N`, FH_x - 40, FH_y + 20);
+                }
+
+                // Reibungskraft (entgegen Hangabtrieb, den Hang hinauf, orange) - nur anzeigen wenn > 0
+                if (FR > 0.1) {
+                    const FR_x = objektX + FR * scale * Math.cos(rad);
+                    const FR_y = objektY - FR * scale * Math.sin(rad);
+                    drawArrow(ctx, objektX, objektY, FR_x, FR_y, '#f59e0b');
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.fillText(`F_R = ${FR.toFixed(1)} N`, FR_x + 10, FR_y - 20);
+                }
+
+                // Resultierende Kraft (parallel zur Ebene, den Hang hinab, lila/magenta)
+                if (Math.abs(Fres) > 0.1) {
+                    const Fres_x = objektX - Fres * scale * Math.cos(rad);
+                    const Fres_y = objektY + Fres * scale * Math.sin(rad);
+                    drawArrow(ctx, objektX, objektY, Fres_x, Fres_y, '#8b5cf6', 4);
+                    ctx.fillStyle = '#8b5cf6';
+                    ctx.font = 'bold 13px Arial';
+                    ctx.fillText(`F_res = ${Fres.toFixed(1)} N`, Fres_x + (Fres > 0 ? -80 : 10), Fres_y + 30);
+                }
+            }
+
+            // Winkel einzeichnen
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(startX, startY, 50, -rad, 0);
+            ctx.stroke();
+            ctx.fillStyle = '#64748b';
+            ctx.font = '14px Arial';
+            ctx.fillText(`${alpha}°`, startX + 60, startY - 15);
+        }
+
+        function drawArrow(ctx, fromX, fromY, toX, toY, color, lineWidth = 3) {
+            const dx = toX - fromX;
+            const dy = toY - fromY;
+            const length = Math.sqrt(dx * dx + dy * dy);
+
+            // Dynamische Pfeilspitzengröße basierend auf Linienlänge
+            const headlen = Math.min(length * 0.2, 12);
+            const angle = Math.atan2(dy, dx);
+
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = lineWidth;
+
+            // Linie
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+
+            // Pfeilspitze nur zeichnen wenn Pfeil lang genug
+            if (length > 5) {
+                ctx.beginPath();
+                ctx.moveTo(toX, toY);
+                ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6),
+                           toY - headlen * Math.sin(angle - Math.PI / 6));
+                ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6),
+                           toY - headlen * Math.sin(angle + Math.PI / 6));
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        function zeichneVektordiagramm(m, alpha, mu) {
+            const canvas = document.getElementById('vektorCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const rad = alpha * Math.PI / 180;
+            const FG = m * g;
+            const FN = FG * Math.cos(rad);
+            const FH = FG * Math.sin(rad);
+
+            // Dynamische Skalierung
+            const maxKraft = Math.max(FG, FN, FH, 10);
+            const scale = Math.min(100 / maxKraft, 1.5);
+
+            // Titel
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Kräfteparallelogramm', width / 2, 20);
+
+            // Zentriert
+            const centerX = width / 2;
+            const centerY = height / 2 + 20;
+
+            ctx.fillStyle = '#64748b';
+            ctx.font = '11px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('F_N + F_H = F_G', centerX, 40);
+
+            // F_N zeigt senkrecht zur Ebene (zur Ebene hin, nach rechts-unten)
+            const FN_endX = centerX + FN * scale * Math.sin(rad);
+            const FN_endY = centerY + FN * scale * Math.cos(rad);
+
+            // F_H zeigt parallel zur Ebene, den Hang hinab (nach links-unten)
+            const FH_endX = centerX - FH * scale * Math.cos(rad);
+            const FH_endY = centerY + FH * scale * Math.sin(rad);
+
+            // FG als Diagonale (FN + FH vektoriell)
+            const FG_endX = centerX + (FN_endX - centerX) + (FH_endX - centerX);
+            const FG_endY = centerY + (FN_endY - centerY) + (FH_endY - centerY);
+
+            // Gestrichelte Hilfslinien für Parallelogramm
+            ctx.setLineDash([2, 3]);
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 1;
+
+            // Parallelogramm: Von FN-Ende parallel zu FH
+            const FH_vector_x = FH_endX - centerX;
+            const FH_vector_y = FH_endY - centerY;
+            ctx.beginPath();
+            ctx.moveTo(FN_endX, FN_endY);
+            ctx.lineTo(FN_endX + FH_vector_x, FN_endY + FH_vector_y);
+            ctx.stroke();
+
+            // Parallelogramm: Von FH-Ende parallel zu FN
+            const FN_vector_x = FN_endX - centerX;
+            const FN_vector_y = FN_endY - centerY;
+            ctx.beginPath();
+            ctx.moveTo(FH_endX, FH_endY);
+            ctx.lineTo(FH_endX + FN_vector_x, FH_endY + FN_vector_y);
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+
+            // Normalkomponente F_N (senkrecht zur Ebene, zur Ebene hin)
+            drawArrow(ctx, centerX, centerY, FN_endX, FN_endY, '#10b981', 2);
+            ctx.fillStyle = '#10b981';
+            ctx.font = '11px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('F_N', FN_endX + 8, FN_endY + 5);
+
+            // Hangabtriebskraft F_H (parallel zur Ebene, den Hang hinab)
+            if (FH > 0.1) {
+                drawArrow(ctx, centerX, centerY, FH_endX, FH_endY, '#3b82f6', 2);
+                ctx.fillStyle = '#3b82f6';
+                ctx.fillText('F_H', FH_endX - 30, FH_endY + 5);
+            }
+
+            // Gewichtskraft F_G als Diagonale (nach unten)
+            drawArrow(ctx, centerX, centerY, FG_endX, FG_endY, '#ef4444', 2);
+            ctx.fillStyle = '#ef4444';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('F_G', FG_endX, FG_endY + 20);
+        }
+
+        function berechneKraefte(m, alpha, mu) {
+            const rad = alpha * Math.PI / 180;
+            const FG = m * g;
+            const FN = FG * Math.cos(rad);
+            const FH = FG * Math.sin(rad);
+
+            // Physikalisch korrekte Reibungskraft (Haft- vs Gleitreibung)
+            const FR_max = mu * FN;
+            const FR = Math.min(FH, FR_max);
+            const Fres = FH - FR;
+
+            const kraefteDiv = document.getElementById('kraefteWerte');
+            kraefteDiv.innerHTML = `
+                <div class="result">
+                    <strong>Gewichtskraft:</strong> F<sub>G</sub> = ${FG.toFixed(2)} N<br>
+                    <strong>Normalkraft:</strong> F<sub>N</sub> = ${FN.toFixed(2)} N<br>
+                    <strong>Hangabtriebskraft:</strong> F<sub>H</sub> = ${FH.toFixed(2)} N<br>
+                    <strong>Reibungskraft:</strong> F<sub>R</sub> = ${FR.toFixed(2)} N<br>
+                    <strong>Resultierende Kraft:</strong> F<sub>res</sub> = ${Fres.toFixed(2)} N
+                </div>
+            `;
+
+            const bewegungDiv = document.getElementById('bewegungsInfo');
+            if (Math.abs(Fres) < 0.1) {
+                bewegungDiv.innerHTML = `
+                    <div class="result">
+                        <strong>Gleichgewicht! (Haftreibung)</strong><br>
+                        Die Haftreibung hält den Körper fest.<br>
+                        F<sub>R</sub> = F<sub>H</sub> = ${FH.toFixed(2)} N
+                    </div>
+                `;
+            } else {
+                const a = Fres / m;
+                bewegungDiv.innerHTML = `
+                    <div class="result">
+                        <strong>Bewegung hangabwärts (Gleitreibung)</strong><br>
+                        Beschleunigung: a = ${a.toFixed(2)} m/s²<br>
+                        F<sub>H</sub> > F<sub>R,max</sub> (${FH.toFixed(2)} N > ${FR_max.toFixed(2)} N)
+                    </div>
+                `;
+            }
+        }
+
+        function toggleKraefte() {
+            showKraefte = !showKraefte;
+            updateEbene();
+        }
+
+        // Initialisierung
+        updateEbene();
+    </script>
+</body>
+</html>

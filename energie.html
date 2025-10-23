@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energie-Simulator | Physik Interaktiv</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Energie-Simulator</h1>
+            <p class="subtitle">Energieumwandlung und Energieerhaltung visualisiert</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="kinematik.html" class="nav-link">Kinematik</a>
+                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
+                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
+                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="energie.html" class="nav-link active">Energie</a>
+                <a href="impuls.html" class="nav-link">Impuls</a>
+                <a href="freierfall.html" class="nav-link">Freier Fall</a>
+                <a href="wurf.html" class="nav-link">Wurf</a>
+                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="formelsammlung.html" class="nav-link">Formeln</a>
+                <a href="rechner.html" class="nav-link">Rechner</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Energieerhaltung verstehen</h2>
+            <p>Beobachten Sie die Umwandlung zwischen potentieller und kinetischer Energie.</p>
+        </section>
+
+        <!-- Pendel-Simulation -->
+        <div class="canvas-container">
+            <h3>Mathematisches Pendel</h3>
+            <canvas id="pendelCanvas" width="800" height="500"></canvas>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="laenge">Pendellänge (m): <span id="laengeValue">2.0</span></label>
+                    <input type="range" id="laenge" min="0.5" max="5" step="0.1" value="2.0" oninput="updatePendel()">
+                </div>
+
+                <div class="control-group">
+                    <label for="startwinkel">Startwinkel (°): <span id="startwinkelValue">45</span></label>
+                    <input type="range" id="startwinkel" min="10" max="80" value="45" oninput="updatePendel()">
+                </div>
+
+                <div class="control-group">
+                    <label for="masse_pendel">Masse (kg): <span id="massePendelValue">1.0</span></label>
+                    <input type="range" id="masse_pendel" min="0.5" max="5" step="0.1" value="1.0" oninput="updatePendel()">
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="startPendel()" style="margin-right: 0.5rem;">Animation starten</button>
+            <button class="btn-primary" onclick="stopPendel()">Stoppen</button>
+            <button class="btn-primary" onclick="resetPendel()">Zurücksetzen</button>
+        </div>
+
+        <!-- Energie-Diagramme -->
+        <div class="calculator-grid" style="margin-top: 2rem;">
+            <div class="calculator-card">
+                <h3>Energiediagramm</h3>
+                <canvas id="energieDiagramm" width="350" height="300"></canvas>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Aktuelle Werte</h3>
+                <div id="energieWerte">
+                    <p>Starten Sie die Simulation...</p>
+                </div>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Energieerhaltung</h3>
+                <canvas id="erhaltungDiagramm" width="350" height="300"></canvas>
+            </div>
+        </div>
+
+        <!-- Formeln -->
+        <div class="formula-list" style="margin-top: 2rem;">
+            <div class="formula-item">
+                <h4>Verwendete Formeln</h4>
+                <div class="formula">
+                    Potentielle Energie: E<sub>pot</sub> = m · g · h<br>
+                    Kinetische Energie: E<sub>kin</sub> = ½ · m · v²<br>
+                    Gesamtenergie: E<sub>ges</sub> = E<sub>pot</sub> + E<sub>kin</sub> = konstant<br>
+                    Höhe: h = l · (1 − cos(φ))<br>
+                    Geschwindigkeit: v = √(2 · g · h)
+                </div>
+                <p class="description">
+                    Bei einem Pendel wird ständig Energie zwischen potentieller und kinetischer Energie umgewandelt.
+                    Am höchsten Punkt ist die potentielle Energie maximal, die kinetische minimal.
+                    Am tiefsten Punkt ist es umgekehrt. Die Gesamtenergie bleibt konstant (ohne Reibung).
+                </p>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        const g = 9.81;
+        let animationId = null;
+        let pendelWinkel = 0;
+        let pendelGeschwindigkeit = 0;
+        let time = 0;
+        let energieVerlauf = [];
+        let maxDataPoints = 300;
+        let pendelSpur = [];
+
+        function updatePendel() {
+            const l = parseFloat(document.getElementById('laenge').value);
+            const startWinkel = parseFloat(document.getElementById('startwinkel').value);
+            const m = parseFloat(document.getElementById('masse_pendel').value);
+
+            document.getElementById('laengeValue').textContent = l.toFixed(1);
+            document.getElementById('startwinkelValue').textContent = startWinkel.toFixed(0);
+            document.getElementById('massePendelValue').textContent = m.toFixed(1);
+        }
+
+        function resetPendel() {
+            stopPendel();
+            const startWinkel = parseFloat(document.getElementById('startwinkel').value);
+            pendelWinkel = startWinkel * Math.PI / 180;
+            pendelGeschwindigkeit = 0;
+            time = 0;
+            energieVerlauf = [];
+            pendelSpur = [];
+            zeichnePendel();
+        }
+
+        function startPendel() {
+            if (animationId) return;
+
+            const startWinkel = parseFloat(document.getElementById('startwinkel').value);
+            if (time === 0) {
+                pendelWinkel = startWinkel * Math.PI / 180;
+                pendelGeschwindigkeit = 0;
+            }
+
+            const fps = 60;
+            const dt = 1 / fps;
+
+            animationId = setInterval(() => {
+                const l = parseFloat(document.getElementById('laenge').value);
+                const m = parseFloat(document.getElementById('masse_pendel').value);
+
+                // Einfache Pendel-Physik (kleine Winkel-Näherung)
+                const beschleunigung = -(g / l) * Math.sin(pendelWinkel);
+                pendelGeschwindigkeit += beschleunigung * dt;
+                pendelWinkel += pendelGeschwindigkeit * dt;
+
+                // Energie-Dämpfung minimal
+                pendelGeschwindigkeit *= 0.9995;
+
+                time += dt;
+
+                zeichnePendel();
+                aktualisiereEnergieDiagramme();
+            }, 1000 / fps);
+        }
+
+        function stopPendel() {
+            if (animationId) {
+                clearInterval(animationId);
+                animationId = null;
+            }
+        }
+
+        function zeichnePendel() {
+            const canvas = document.getElementById('pendelCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const l = parseFloat(document.getElementById('laenge').value);
+            const m = parseFloat(document.getElementById('masse_pendel').value);
+
+            // Aufhängepunkt
+            const aufhaengeX = width / 2;
+            const aufhaengeY = 50;
+            const skalierung = 80; // Pixel pro Meter
+
+            // Pendelposition
+            const pendelX = aufhaengeX + l * skalierung * Math.sin(pendelWinkel);
+            const pendelY = aufhaengeY + l * skalierung * Math.cos(pendelWinkel);
+
+            // Spur speichern
+            pendelSpur.push({ x: pendelX, y: pendelY });
+            if (pendelSpur.length > 50) pendelSpur.shift();
+
+            // Spur zeichnen
+            if (pendelSpur.length > 1) {
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([2, 2]);
+                ctx.beginPath();
+                ctx.moveTo(pendelSpur[0].x, pendelSpur[0].y);
+                for (let i = 1; i < pendelSpur.length; i++) {
+                    ctx.lineTo(pendelSpur[i].x, pendelSpur[i].y);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Referenzlinien (gestrichelt)
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(aufhaengeX, aufhaengeY);
+            ctx.lineTo(aufhaengeX, aufhaengeY + l * skalierung + 50);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Pendelfaden
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(aufhaengeX, aufhaengeY);
+            ctx.lineTo(pendelX, pendelY);
+            ctx.stroke();
+
+            // Aufhängepunkt
+            ctx.fillStyle = '#64748b';
+            ctx.beginPath();
+            ctx.arc(aufhaengeX, aufhaengeY, 5, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Pendelkörper
+            const radius = Math.max(10, Math.sqrt(m) * 15);
+            ctx.fillStyle = '#3b82f6';
+            ctx.beginPath();
+            ctx.arc(pendelX, pendelY, radius, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.strokeStyle = '#1e40af';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Geschwindigkeitspfeil (grün)
+            const v_pfeil = l * Math.abs(pendelGeschwindigkeit);
+            if (v_pfeil > 0.01) { // Nur zeichnen wenn Geschwindigkeit > 0
+                const vScale = 30; // Skalierung für Pfeil-Länge
+                const arrowLength = v_pfeil * vScale;
+
+                // Richtung tangential zur Bewegung (senkrecht zum Pendelfaden)
+                // Die Geschwindigkeit ist tangential: v = L * ω
+                // Für Winkel von der Vertikalen: v_x = L·cos(θ)·ω, v_y = -L·sin(θ)·ω
+                const tangentX = Math.cos(pendelWinkel) * pendelGeschwindigkeit;
+                const tangentY = -Math.sin(pendelWinkel) * pendelGeschwindigkeit;
+
+                // Normalisieren für Richtung
+                const tangentLength = Math.sqrt(tangentX * tangentX + tangentY * tangentY);
+                const normTangentX = tangentX / tangentLength;
+                const normTangentY = tangentY / tangentLength;
+
+                const arrowEndX = pendelX + normTangentX * arrowLength;
+                const arrowEndY = pendelY + normTangentY * arrowLength;
+
+                // Pfeil zeichnen
+                ctx.strokeStyle = '#10b981';
+                ctx.fillStyle = '#10b981';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(pendelX, pendelY);
+                ctx.lineTo(arrowEndX, arrowEndY);
+                ctx.stroke();
+
+                // Pfeilspitze
+                const headlen = 10;
+                const angle = Math.atan2(arrowEndY - pendelY, arrowEndX - pendelX);
+                ctx.beginPath();
+                ctx.moveTo(arrowEndX, arrowEndY);
+                ctx.lineTo(arrowEndX - headlen * Math.cos(angle - Math.PI / 6),
+                           arrowEndY - headlen * Math.sin(angle - Math.PI / 6));
+                ctx.lineTo(arrowEndX - headlen * Math.cos(angle + Math.PI / 6),
+                           arrowEndY - headlen * Math.sin(angle + Math.PI / 6));
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Höhen-Markierung und Energieberechnung
+            const h = l * (1 - Math.cos(pendelWinkel));
+            const h0 = l * (1 - Math.cos(parseFloat(document.getElementById('startwinkel').value) * Math.PI / 180));
+
+            // Rote gestrichelte Linie - konstante Länge, nur Höhe ändert sich
+            const hoehenlinieLaenge = 300; // Feste Länge in Pixeln
+            const hoehenlinieStartX = aufhaengeX - hoehenlinieLaenge / 2;
+            const hoehenlinieEndX = aufhaengeX + hoehenlinieLaenge / 2;
+
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(hoehenlinieStartX, pendelY);
+            ctx.lineTo(hoehenlinieEndX, pendelY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Energieberechnung
+            const Epot = m * g * h;
+            const v = l * Math.abs(pendelGeschwindigkeit);
+            const Ekin = 0.5 * m * v * v;
+
+            // Höhenmarker und Energie-Indikator
+            const maxH = l * (1 - Math.cos(parseFloat(document.getElementById('startwinkel').value) * Math.PI / 180));
+            const EpotBarHeight = (Epot / (m * g * maxH)) * 80;
+            const EkinBarHeight = (Ekin / (m * g * maxH)) * 80;
+
+            // Epot-Balken (rechts)
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(width - 60, aufhaengeY + l * skalierung - EpotBarHeight, 20, EpotBarHeight);
+            ctx.strokeStyle = '#991b1b';
+            ctx.strokeRect(width - 60, aufhaengeY + l * skalierung - EpotBarHeight, 20, EpotBarHeight);
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '11px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('E_pot', width - 55, aufhaengeY + l * skalierung + 20);
+
+            // Ekin-Balken (rechts daneben)
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(width - 35, aufhaengeY + l * skalierung - EkinBarHeight, 20, EkinBarHeight);
+            ctx.strokeStyle = '#065f46';
+            ctx.strokeRect(width - 35, aufhaengeY + l * skalierung - EkinBarHeight, 20, EkinBarHeight);
+            ctx.fillStyle = '#1e293b';
+            ctx.fillText('E_kin', width - 30, aufhaengeY + l * skalierung + 20);
+
+            // Beschriftung
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText(`Winkel: ${(pendelWinkel * 180 / Math.PI).toFixed(1)}°`, 20, 30);
+            ctx.fillText(`Höhe: ${h.toFixed(3)} m`, 20, 50);
+            ctx.fillText(`Länge: ${l.toFixed(1)} m`, 20, 70);
+            ctx.fillText(`v: ${v.toFixed(2)} m/s`, 20, 90);
+        }
+
+        function aktualisiereEnergieDiagramme() {
+            const l = parseFloat(document.getElementById('laenge').value);
+            const m = parseFloat(document.getElementById('masse_pendel').value);
+
+            const h = l * (1 - Math.cos(pendelWinkel));
+            const Epot = m * g * h;
+            const v = l * Math.abs(pendelGeschwindigkeit);
+            const Ekin = 0.5 * m * v * v;
+            const Eges = Epot + Ekin;
+
+            // Verlauf speichern
+            energieVerlauf.push({ Epot, Ekin, Eges });
+            if (energieVerlauf.length > maxDataPoints) {
+                energieVerlauf.shift();
+            }
+
+            // Aktuelle Werte anzeigen
+            document.getElementById('energieWerte').innerHTML = `
+                <div class="result">
+                    <strong>Potentielle Energie:</strong><br>
+                    E<sub>pot</sub> = ${Epot.toFixed(2)} J<br><br>
+                    <strong>Kinetische Energie:</strong><br>
+                    E<sub>kin</sub> = ${Ekin.toFixed(2)} J<br><br>
+                    <strong>Gesamtenergie:</strong><br>
+                    E<sub>ges</sub> = ${Eges.toFixed(2)} J<br><br>
+                    <strong>Geschwindigkeit:</strong><br>
+                    v = ${v.toFixed(2)} m/s
+                </div>
+            `;
+
+            zeichneEnergieDiagramm(Epot, Ekin, Eges);
+            zeichneErhaltungDiagramm();
+        }
+
+        function zeichneEnergieDiagramm(Epot, Ekin, Eges) {
+            const canvas = document.getElementById('energieDiagramm');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const barWidth = 80;
+            const spacing = 40;
+            const maxHeight = height - 100;
+            const startX = 50;
+
+            // Skalierung
+            const scale = maxHeight / Math.max(Eges, 1);
+
+            // Epot
+            ctx.fillStyle = '#ef4444';
+            const Epot_height = Epot * scale;
+            ctx.fillRect(startX, height - 50 - Epot_height, barWidth, Epot_height);
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`E_pot`, startX + barWidth/2, height - 30);
+            ctx.fillText(`${Epot.toFixed(1)} J`, startX + barWidth/2, height - 50 - Epot_height - 10);
+
+            // Ekin
+            ctx.fillStyle = '#10b981';
+            const Ekin_height = Ekin * scale;
+            ctx.fillRect(startX + barWidth + spacing, height - 50 - Ekin_height, barWidth, Ekin_height);
+            ctx.fillStyle = '#1e293b';
+            ctx.fillText(`E_kin`, startX + barWidth + spacing + barWidth/2, height - 30);
+            ctx.fillText(`${Ekin.toFixed(1)} J`, startX + barWidth + spacing + barWidth/2, height - 50 - Ekin_height - 10);
+
+            // Eges
+            ctx.fillStyle = '#3b82f6';
+            const Eges_height = Eges * scale;
+            ctx.fillRect(startX + 2 * (barWidth + spacing), height - 50 - Eges_height, barWidth, Eges_height);
+            ctx.fillStyle = '#1e293b';
+            ctx.fillText(`E_ges`, startX + 2 * (barWidth + spacing) + barWidth/2, height - 30);
+            ctx.fillText(`${Eges.toFixed(1)} J`, startX + 2 * (barWidth + spacing) + barWidth/2, height - 50 - Eges_height - 10);
+
+            // Titel
+            ctx.font = '14px Arial';
+            ctx.fillText('Energieverteilung', width / 2, 20);
+        }
+
+        function zeichneErhaltungDiagramm() {
+            const canvas = document.getElementById('erhaltungDiagramm');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            if (energieVerlauf.length < 2) return;
+
+            const padding = 40;
+            const graphWidth = width - 2 * padding;
+            const graphHeight = height - 2 * padding;
+
+            // Achsen
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(padding, padding);
+            ctx.stroke();
+
+            // Skalierung
+            const maxE = Math.max(...energieVerlauf.map(e => e.Eges));
+            const scaleY = graphHeight / Math.max(maxE, 1);
+            const scaleX = graphWidth / maxDataPoints;
+
+            // Epot-Kurve
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            energieVerlauf.forEach((e, i) => {
+                const x = padding + i * scaleX;
+                const y = height - padding - e.Epot * scaleY;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Ekin-Kurve
+            ctx.strokeStyle = '#10b981';
+            ctx.beginPath();
+            energieVerlauf.forEach((e, i) => {
+                const x = padding + i * scaleX;
+                const y = height - padding - e.Ekin * scaleY;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Legende
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(padding + 10, 10, 15, 15);
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('E_pot', padding + 30, 22);
+
+            ctx.fillStyle = '#10b981';
+            ctx.fillRect(padding + 100, 10, 15, 15);
+            ctx.fillStyle = '#1e293b';
+            ctx.fillText('E_kin', padding + 120, 22);
+        }
+
+        // Initialisierung
+        updatePendel();
+        resetPendel();
+    </script>
+</body>
+</html>

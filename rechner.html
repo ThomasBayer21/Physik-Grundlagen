@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physik-Rechner | Physik Kursmaterialien</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Physik-Rechner</h1>
+            <p class="subtitle">Interaktive Tools für Berechnungen</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="kinematik.html" class="nav-link">Kinematik</a>
+                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
+                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
+                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="energie.html" class="nav-link">Energie</a>
+                <a href="impuls.html" class="nav-link">Impuls</a>
+                <a href="freierfall.html" class="nav-link">Freier Fall</a>
+                <a href="wurf.html" class="nav-link">Wurf</a>
+                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="formelsammlung.html" class="nav-link">Formeln</a>
+                <a href="rechner.html" class="nav-link active">Rechner</a>
+                <a href="uebungen.html" class="nav-link">Übungen</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Interaktive Rechner</h2>
+            <p>Nutzen Sie diese Rechner für Fehlerberechnungen, Einheitenumrechnungen und physikalische Berechnungen.</p>
+        </section>
+
+        <div class="calculator-grid">
+            <!-- Fehlerrechner -->
+            <div class="calculator-card">
+                <h3>Fehlerrechnung</h3>
+                <div class="input-group">
+                    <label for="sollwert">Sollwert (m<sub>SOLL</sub>):</label>
+                    <input type="number" id="sollwert" step="any" placeholder="Richtiger Wert">
+                </div>
+                <div class="input-group">
+                    <label for="falscherwert">Gemessener Wert (m<sub>FALSCH</sub>):</label>
+                    <input type="number" id="falscherwert" step="any" placeholder="Gemessener Wert">
+                </div>
+                <button class="btn-primary" onclick="berechneFehler()">Berechnen</button>
+                <div id="fehlerErgebnis"></div>
+
+                <div class="formula-box" style="margin-top: 2rem;">
+                    <strong>Formeln:</strong><br>
+                    f<sub>ABS</sub> = |m<sub>SOLL</sub> − m<sub>FALSCH</sub>|<br>
+                    f<sub>REL</sub> = |f<sub>ABS</sub> / m<sub>SOLL</sub>|
+                </div>
+            </div>
+
+            <!-- Einheitenumrechner Zeit -->
+            <div class="calculator-card">
+                <h3>Zeiteinheiten-Umrechner</h3>
+                <div class="input-group">
+                    <label for="zeitwert">Wert:</label>
+                    <input type="number" id="zeitwert" step="any" value="1">
+                </div>
+                <div class="input-group">
+                    <label for="zeitvon">Von:</label>
+                    <select id="zeitvon">
+                        <option value="ms">Millisekunde (ms)</option>
+                        <option value="s" selected>Sekunde (s)</option>
+                        <option value="min">Minute (min)</option>
+                        <option value="h">Stunde (h)</option>
+                        <option value="d">Tag (d)</option>
+                        <option value="w">Woche (w)</option>
+                        <option value="a">Jahr (a)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="zeitnach">Nach:</label>
+                    <select id="zeitnach">
+                        <option value="ms">Millisekunde (ms)</option>
+                        <option value="s">Sekunde (s)</option>
+                        <option value="min" selected>Minute (min)</option>
+                        <option value="h">Stunde (h)</option>
+                        <option value="d">Tag (d)</option>
+                        <option value="w">Woche (w)</option>
+                        <option value="a">Jahr (a)</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="umrechnenZeit()">Umrechnen</button>
+                <div id="zeitErgebnis"></div>
+            </div>
+
+            <!-- Längenumrechner -->
+            <div class="calculator-card">
+                <h3>Längen-Umrechner</h3>
+                <div class="input-group">
+                    <label for="laengenwert">Wert:</label>
+                    <input type="number" id="laengenwert" step="any" value="1">
+                </div>
+                <div class="input-group">
+                    <label for="laengevon">Von:</label>
+                    <select id="laengevon">
+                        <option value="nm">Nanometer (nm)</option>
+                        <option value="µm">Mikrometer (µm)</option>
+                        <option value="mm">Millimeter (mm)</option>
+                        <option value="cm">Zentimeter (cm)</option>
+                        <option value="m" selected>Meter (m)</option>
+                        <option value="km">Kilometer (km)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="laengenach">Nach:</label>
+                    <select id="laengenach">
+                        <option value="nm">Nanometer (nm)</option>
+                        <option value="µm">Mikrometer (µm)</option>
+                        <option value="mm">Millimeter (mm)</option>
+                        <option value="cm" selected>Zentimeter (cm)</option>
+                        <option value="m">Meter (m)</option>
+                        <option value="km">Kilometer (km)</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="umrechnenLaenge()">Umrechnen</button>
+                <div id="laengeErgebnis"></div>
+            </div>
+
+            <!-- Geschwindigkeitsrechner -->
+            <div class="calculator-card">
+                <h3>Geschwindigkeitsrechner</h3>
+                <div class="input-group">
+                    <label for="strecke">Strecke (s in m):</label>
+                    <input type="number" id="strecke" step="any" placeholder="z.B. 100">
+                </div>
+                <div class="input-group">
+                    <label for="zeit">Zeit (t in s):</label>
+                    <input type="number" id="zeit" step="any" placeholder="z.B. 10">
+                </div>
+                <button class="btn-primary" onclick="berechneGeschwindigkeit()">Berechnen</button>
+                <div id="geschwindigkeitErgebnis"></div>
+
+                <div class="formula-box" style="margin-top: 2rem;">
+                    <strong>Formel:</strong><br>
+                    v = s / t
+                </div>
+            </div>
+
+            <!-- Beschleunigungsrechner -->
+            <div class="calculator-card">
+                <h3>Beschleunigungsrechner</h3>
+                <div class="input-group">
+                    <label for="v0">Anfangsgeschwindigkeit (v₀ in m/s):</label>
+                    <input type="number" id="v0" step="any" value="0">
+                </div>
+                <div class="input-group">
+                    <label for="v">Endgeschwindigkeit (v in m/s):</label>
+                    <input type="number" id="v" step="any" placeholder="z.B. 50">
+                </div>
+                <div class="input-group">
+                    <label for="t_besch">Zeit (t in s):</label>
+                    <input type="number" id="t_besch" step="any" placeholder="z.B. 5">
+                </div>
+                <button class="btn-primary" onclick="berechneBeschleunigung()">Berechnen</button>
+                <div id="beschleunigungErgebnis"></div>
+
+                <div class="formula-box" style="margin-top: 2rem;">
+                    <strong>Formel:</strong><br>
+                    a = (v − v₀) / t
+                </div>
+            </div>
+
+            <!-- Kreisumfang mit Pi-Näherungen -->
+            <div class="calculator-card">
+                <h3>Kreisumfang-Rechner (π-Vergleich)</h3>
+                <div class="input-group">
+                    <label for="radius">Radius (r in km):</label>
+                    <input type="number" id="radius" step="any" value="6366" placeholder="Erdradius: 6366">
+                </div>
+                <button class="btn-primary" onclick="berechneKreisumfang()">Berechnen</button>
+                <div id="kreisErgebnis"></div>
+
+                <div class="formula-box" style="margin-top: 2rem;">
+                    <strong>Formel:</strong><br>
+                    U = 2πr<br>
+                    <small>Vergleich mit π ≈ 3, √10, 22/7</small>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        // Fehlerrechnung
+        function berechneFehler() {
+            const soll = parseFloat(document.getElementById('sollwert').value);
+            const falsch = parseFloat(document.getElementById('falscherwert').value);
+            const ergebnisDiv = document.getElementById('fehlerErgebnis');
+
+            if (isNaN(soll) || isNaN(falsch)) {
+                ergebnisDiv.innerHTML = '<div class="error">Bitte beide Werte eingeben!</div>';
+                return;
+            }
+
+            const fAbs = Math.abs(soll - falsch);
+            const fRel = Math.abs(fAbs / soll);
+            const fRelProzent = (fRel * 100).toFixed(4);
+
+            ergebnisDiv.innerHTML = `
+                <div class="result">
+                    <strong>Absoluter Fehler:</strong> f<sub>ABS</sub> = ${fAbs.toExponential(4)}<br>
+                    <strong>Relativer Fehler:</strong> f<sub>REL</sub> = ${fRel.toExponential(4)} = ${fRelProzent}%
+                </div>
+            `;
+        }
+
+        // Zeitumrechnung
+        function umrechnenZeit() {
+            const faktorenNachSekunden = {
+                'ms': 0.001,
+                's': 1,
+                'min': 60,
+                'h': 3600,
+                'd': 86400,
+                'w': 604800,
+                'a': 31557600  // 365.25 Tage
+            };
+
+            const wert = parseFloat(document.getElementById('zeitwert').value);
+            const von = document.getElementById('zeitvon').value;
+            const nach = document.getElementById('zeitnach').value;
+            const ergebnisDiv = document.getElementById('zeitErgebnis');
+
+            if (isNaN(wert)) {
+                ergebnisDiv.innerHTML = '<div class="error">Bitte Wert eingeben!</div>';
+                return;
+            }
+
+            const inSekunden = wert * faktorenNachSekunden[von];
+            const ergebnis = inSekunden / faktorenNachSekunden[nach];
+
+            ergebnisDiv.innerHTML = `
+                <div class="result">
+                    <strong>Ergebnis:</strong> ${ergebnis.toExponential(6)}<br>
+                    ${wert} ${von} = ${ergebnis.toFixed(6)} ${nach}
+                </div>
+            `;
+        }
+
+        // Längenumrechnung
+        function umrechnenLaenge() {
+            const faktorenNachMeter = {
+                'nm': 1e-9,
+                'µm': 1e-6,
+                'mm': 0.001,
+                'cm': 0.01,
+                'm': 1,
+                'km': 1000
+            };
+
+            const wert = parseFloat(document.getElementById('laengenwert').value);
+            const von = document.getElementById('laengevon').value;
+            const nach = document.getElementById('laengenach').value;
+            const ergebnisDiv = document.getElementById('laengeErgebnis');
+
+            if (isNaN(wert)) {
+                ergebnisDiv.innerHTML = '<div class="error">Bitte Wert eingeben!</div>';
+                return;
+            }
+
+            const inMeter = wert * faktorenNachMeter[von];
+            const ergebnis = inMeter / faktorenNachMeter[nach];
+
+            ergebnisDiv.innerHTML = `
+                <div class="result">
+                    <strong>Ergebnis:</strong> ${ergebnis.toExponential(6)}<br>
+                    ${wert} ${von} = ${ergebnis.toFixed(6)} ${nach}
+                </div>
+            `;
+        }
+
+        // Geschwindigkeitsrechner
+        function berechneGeschwindigkeit() {
+            const s = parseFloat(document.getElementById('strecke').value);
+            const t = parseFloat(document.getElementById('zeit').value);
+            const ergebnisDiv = document.getElementById('geschwindigkeitErgebnis');
+
+            if (isNaN(s) || isNaN(t) || t === 0) {
+                ergebnisDiv.innerHTML = '<div class="error">Bitte gültige Werte eingeben (t ≠ 0)!</div>';
+                return;
+            }
+
+            const v = s / t;
+            const vKmh = v * 3.6;
+
+            ergebnisDiv.innerHTML = `
+                <div class="result">
+                    <strong>Geschwindigkeit:</strong><br>
+                    v = ${v.toFixed(4)} m/s<br>
+                    v = ${vKmh.toFixed(4)} km/h
+                </div>
+            `;
+        }
+
+        // Beschleunigungsrechner
+        function berechneBeschleunigung() {
+            const v0 = parseFloat(document.getElementById('v0').value);
+            const v = parseFloat(document.getElementById('v').value);
+            const t = parseFloat(document.getElementById('t_besch').value);
+            const ergebnisDiv = document.getElementById('beschleunigungErgebnis');
+
+            if (isNaN(v0) || isNaN(v) || isNaN(t) || t === 0) {
+                ergebnisDiv.innerHTML = '<div class="error">Bitte gültige Werte eingeben (t ≠ 0)!</div>';
+                return;
+            }
+
+            const a = (v - v0) / t;
+
+            ergebnisDiv.innerHTML = `
+                <div class="result">
+                    <strong>Beschleunigung:</strong><br>
+                    a = ${a.toFixed(4)} m/s²<br>
+                    ${a > 0 ? '(Beschleunigung)' : a < 0 ? '(Verzögerung/Bremsen)' : '(Konstante Geschwindigkeit)'}
+                </div>
+            `;
+        }
+
+        // Kreisumfang mit Pi-Näherungen
+        function berechneKreisumfang() {
+            const r = parseFloat(document.getElementById('radius').value);
+            const ergebnisDiv = document.getElementById('kreisErgebnis');
+
+            if (isNaN(r)) {
+                ergebnisDiv.innerHTML = '<div class="error">Bitte Radius eingeben!</div>';
+                return;
+            }
+
+            const piGenau = Math.PI;
+            const pi3 = 3;
+            const piSqrt10 = Math.sqrt(10);
+            const pi22_7 = 22/7;
+
+            const U_genau = 2 * piGenau * r;
+            const U_3 = 2 * pi3 * r;
+            const U_sqrt10 = 2 * piSqrt10 * r;
+            const U_22_7 = 2 * pi22_7 * r;
+
+            const fehler_3 = Math.abs(U_genau - U_3);
+            const fehlerRel_3 = (fehler_3 / U_genau * 100).toFixed(4);
+
+            const fehler_sqrt10 = Math.abs(U_genau - U_sqrt10);
+            const fehlerRel_sqrt10 = (fehler_sqrt10 / U_genau * 100).toFixed(4);
+
+            const fehler_22_7 = Math.abs(U_genau - U_22_7);
+            const fehlerRel_22_7 = (fehler_22_7 / U_genau * 100).toFixed(4);
+
+            ergebnisDiv.innerHTML = `
+                <div class="result">
+                    <strong>Mit π (genau):</strong> U = ${U_genau.toFixed(4)} km<br><br>
+
+                    <strong>Mit π ≈ 3:</strong> U = ${U_3.toFixed(4)} km<br>
+                    Fehler: ${fehler_3.toFixed(4)} km (${fehlerRel_3}%)<br><br>
+
+                    <strong>Mit π ≈ √10:</strong> U = ${U_sqrt10.toFixed(4)} km<br>
+                    Fehler: ${fehler_sqrt10.toFixed(4)} km (${fehlerRel_sqrt10}%)<br><br>
+
+                    <strong>Mit π ≈ 22/7:</strong> U = ${U_22_7.toFixed(4)} km<br>
+                    Fehler: ${fehler_22_7.toFixed(4)} km (${fehlerRel_22_7}%)
+                </div>
+            `;
+        }
+
+        // Enter-Taste für alle Input-Felder
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const card = this.closest('.calculator-card');
+                    const button = card.querySelector('button');
+                    if (button) button.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

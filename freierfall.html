@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freier Fall Simulator | Physik Interaktiv</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Freier Fall Simulator</h1>
+            <p class="subtitle">Visualisierung des freien Falls mit und ohne Luftwiderstand</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="kinematik.html" class="nav-link">Kinematik</a>
+                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
+                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
+                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="energie.html" class="nav-link">Energie</a>
+                <a href="impuls.html" class="nav-link">Impuls</a>
+                <a href="freierfall.html" class="nav-link active">Freier Fall</a>
+                <a href="wurf.html" class="nav-link">Wurf</a>
+                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="formelsammlung.html" class="nav-link">Formeln</a>
+                <a href="rechner.html" class="nav-link">Rechner</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Freier Fall</h2>
+            <p>Simulieren Sie den freien Fall mit verschiedenen Anfangshöhen und beobachten Sie die Bewegung.</p>
+        </section>
+
+        <div class="canvas-container">
+            <h3>Fall-Animation</h3>
+            <canvas id="fallCanvas" width="800" height="500"></canvas>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="hoehe">Anfangshöhe (m): <span id="hoeheValue">100</span></label>
+                    <input type="range" id="hoehe" min="10" max="200" value="100" oninput="updateParameter()">
+                </div>
+
+                <div class="control-group">
+                    <label for="masse_fall">Masse (kg): <span id="masseFallValue">1.0</span></label>
+                    <input type="range" id="masse_fall" min="0.1" max="10" step="0.1" value="1.0" oninput="updateParameter()">
+                </div>
+
+                <div class="control-group">
+                    <label for="luftwiderstand">Luftwiderstand:</label>
+                    <select id="luftwiderstand" onchange="updateParameter()">
+                        <option value="0">Ohne (Vakuum)</option>
+                        <option value="0.1">Gering</option>
+                        <option value="0.3">Mittel</option>
+                        <option value="0.5">Stark</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="startFall()">Start</button>
+            <button class="btn-primary" onclick="stopFall()">Stopp</button>
+            <button class="btn-primary" onclick="resetFall()">Zurücksetzen</button>
+        </div>
+
+        <div class="calculator-grid" style="margin-top: 2rem;">
+            <div class="calculator-card">
+                <h3>Höhe-Zeit-Diagramm</h3>
+                <canvas id="hoeheDiagramm" width="350" height="300"></canvas>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Geschwindigkeit-Zeit-Diagramm</h3>
+                <canvas id="geschwindigkeitDiagramm" width="350" height="300"></canvas>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Aktuelle Werte</h3>
+                <div id="aktuelleWerte">
+                    <p>Starten Sie die Simulation...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-list" style="margin-top: 2rem;">
+            <div class="formula-item">
+                <h4>Verwendete Formeln (ohne Luftwiderstand)</h4>
+                <div class="formula">
+                    Höhe: h(t) = h₀ − ½ · g · t²<br>
+                    Geschwindigkeit: v(t) = g · t<br>
+                    Fallzeit: t = √(2h₀ / g)<br>
+                    Aufprallgeschwindigkeit: v = √(2 · g · h₀)<br>
+                    g = 9.81 m/s² (Erdbeschleunigung)
+                </div>
+                <p class="description">
+                    Beim freien Fall wirkt nur die Gewichtskraft. Ohne Luftwiderstand ist die Beschleunigung konstant.
+                    Mit Luftwiderstand nimmt die Beschleunigung ab und die Geschwindigkeit nähert sich einer Grenzgeschwindigkeit.
+                </p>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        const g = 9.81;
+        let animationId = null;
+        let h0 = 100;
+        let h = 100;
+        let v = 0;
+        let time = 0;
+        let masse = 1.0;
+        let cw = 0;
+        let hoeheDaten = [];
+        let geschwindigkeitDaten = [];
+
+        function updateParameter() {
+            h0 = parseFloat(document.getElementById('hoehe').value);
+            masse = parseFloat(document.getElementById('masse_fall').value);
+            cw = parseFloat(document.getElementById('luftwiderstand').value);
+
+            document.getElementById('hoeheValue').textContent = h0.toFixed(0);
+            document.getElementById('masseFallValue').textContent = masse.toFixed(1);
+        }
+
+        function resetFall() {
+            stopFall();
+            h = h0;
+            v = 0;
+            time = 0;
+            hoeheDaten = [];
+            geschwindigkeitDaten = [];
+            zeichneFall();
+            zeichneDiagramme();
+        }
+
+        function startFall() {
+            if (animationId) return;
+
+            const fps = 60;
+            const dt = 1 / fps;
+
+            animationId = setInterval(() => {
+                // Luftwiderstand F_L = k * v² (vereinfacht: k = 0.5 * rho * cw * A / m)
+                // cw-Wert ist hier bereits auf Masse normiert
+                const luftwiderstandBeschl = cw * v * v;
+                const beschleunigung = g - luftwiderstandBeschl;
+
+                v += beschleunigung * dt;
+                h -= v * dt;
+
+                time += dt;
+
+                // Daten speichern
+                hoeheDaten.push({ t: time, h: Math.max(h, 0) });
+                geschwindigkeitDaten.push({ t: time, v: v });
+
+                if (hoeheDaten.length > 500) {
+                    hoeheDaten.shift();
+                    geschwindigkeitDaten.shift();
+                }
+
+                zeichneFall();
+                zeichneDiagramme();
+                aktualisiereWerte();
+
+                // Stoppen bei Bodenkontakt
+                if (h <= 0) {
+                    h = 0;
+                    stopFall();
+                }
+            }, 1000 / fps);
+        }
+
+        function stopFall() {
+            if (animationId) {
+                clearInterval(animationId);
+                animationId = null;
+            }
+        }
+
+        function zeichneFall() {
+            const canvas = document.getElementById('fallCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Koordinaten
+            const bodenY = height - 50;
+            const maxHoehe = h0;
+            const scale = (bodenY - 50) / maxHoehe;
+            const objektY = bodenY - h * scale;
+
+            // Himmel/Hintergrund
+            const gradient = ctx.createLinearGradient(0, 0, 0, bodenY);
+            gradient.addColorStop(0, '#e0f2fe');
+            gradient.addColorStop(1, '#f0f9ff');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, bodenY);
+
+            // Boden
+            ctx.fillStyle = '#78716c';
+            ctx.fillRect(0, bodenY, width, height - bodenY);
+
+            // Höhenlinien
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            for (let i = 0; i <= maxHoehe; i += 20) {
+                const y = bodenY - i * scale;
+                ctx.beginPath();
+                ctx.moveTo(50, y);
+                ctx.lineTo(width - 50, y);
+                ctx.stroke();
+
+                ctx.fillStyle = '#64748b';
+                ctx.font = '11px Arial';
+                ctx.textAlign = 'right';
+                ctx.fillText(`${i}m`, 45, y + 4);
+            }
+            ctx.setLineDash([]);
+
+            // Fallendes Objekt
+            const objektX = width / 2;
+            const radius = Math.max(10, Math.sqrt(masse) * 10);
+
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(objektX, objektY, radius, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.strokeStyle = '#991b1b';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Geschwindigkeitspfeil
+            if (v > 0.1) {
+                const arrowLength = Math.min(v * 3, 60);
+                ctx.strokeStyle = '#3b82f6';
+                ctx.fillStyle = '#3b82f6';
+                ctx.lineWidth = 3;
+
+                ctx.beginPath();
+                ctx.moveTo(objektX, objektY + radius);
+                ctx.lineTo(objektX, objektY + radius + arrowLength);
+                ctx.stroke();
+
+                // Pfeilspitze
+                ctx.beginPath();
+                ctx.moveTo(objektX, objektY + radius + arrowLength);
+                ctx.lineTo(objektX - 6, objektY + radius + arrowLength - 10);
+                ctx.lineTo(objektX + 6, objektY + radius + arrowLength - 10);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.fillStyle = '#1e293b';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText(`v = ${v.toFixed(1)} m/s`, objektX + 20, objektY + radius + arrowLength / 2);
+            }
+
+            // Aktuelle Höhe anzeigen
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`h = ${h.toFixed(1)} m`, objektX, 30);
+            ctx.font = '14px Arial';
+            ctx.fillText(`t = ${time.toFixed(2)} s`, objektX, 50);
+        }
+
+        function zeichneDiagramme() {
+            zeichneHoeheDiagramm();
+            zeichneGeschwindigkeitDiagramm();
+        }
+
+        function zeichneHoeheDiagramm() {
+            const canvas = document.getElementById('hoeheDiagramm');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            if (hoeheDaten.length < 2) return;
+
+            const padding = 40;
+            const graphWidth = width - 2 * padding;
+            const graphHeight = height - 2 * padding;
+
+            // Achsen
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(padding, padding);
+            ctx.stroke();
+
+            // Beschriftung
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Zeit (s)', width / 2, height - 5);
+            ctx.save();
+            ctx.translate(15, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Höhe (m)', 0, 0);
+            ctx.restore();
+
+            // Skalierung
+            const maxT = Math.max(...hoeheDaten.map(d => d.t));
+            const maxH = h0;
+            const scaleX = graphWidth / Math.max(maxT, 1);
+            const scaleY = graphHeight / Math.max(maxH, 1);
+
+            // Kurve zeichnen
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            hoeheDaten.forEach((d, i) => {
+                const x = padding + d.t * scaleX;
+                const y = height - padding - d.h * scaleY;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+        }
+
+        function zeichneGeschwindigkeitDiagramm() {
+            const canvas = document.getElementById('geschwindigkeitDiagramm');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            if (geschwindigkeitDaten.length < 2) return;
+
+            const padding = 40;
+            const graphWidth = width - 2 * padding;
+            const graphHeight = height - 2 * padding;
+
+            // Achsen
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(padding, padding);
+            ctx.stroke();
+
+            // Beschriftung
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Zeit (s)', width / 2, height - 5);
+            ctx.save();
+            ctx.translate(15, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('v (m/s)', 0, 0);
+            ctx.restore();
+
+            // Skalierung
+            const maxT = Math.max(...geschwindigkeitDaten.map(d => d.t));
+            const maxV = Math.max(...geschwindigkeitDaten.map(d => d.v));
+            const scaleX = graphWidth / Math.max(maxT, 1);
+            const scaleY = graphHeight / Math.max(maxV, 1);
+
+            // Kurve zeichnen
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            geschwindigkeitDaten.forEach((d, i) => {
+                const x = padding + d.t * scaleX;
+                const y = height - padding - d.v * scaleY;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+        }
+
+        function aktualisiereWerte() {
+            const fallzeit = Math.sqrt(2 * h0 / g);
+            const endgeschwindigkeit = Math.sqrt(2 * g * h0);
+            const verbleibendeZeit = h > 0 ? Math.sqrt(2 * h / g) : 0;
+
+            document.getElementById('aktuelleWerte').innerHTML = `
+                <div class="result">
+                    <strong>Aktuelle Höhe:</strong> ${h.toFixed(2)} m<br>
+                    <strong>Aktuelle Geschwindigkeit:</strong> ${v.toFixed(2)} m/s<br>
+                    <strong>Verstrichene Zeit:</strong> ${time.toFixed(2)} s<br><br>
+                    <strong>Theoretische Werte (ohne Luftwiderstand):</strong><br>
+                    Fallzeit: ${fallzeit.toFixed(2)} s<br>
+                    Endgeschwindigkeit: ${endgeschwindigkeit.toFixed(2)} m/s<br>
+                    (≈ ${(endgeschwindigkeit * 3.6).toFixed(1)} km/h)
+                </div>
+            `;
+        }
+
+        // Initialisierung
+        updateParameter();
+        resetFall();
+    </script>
+</body>
+</html>

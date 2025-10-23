@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D-Vektor Visualisierung | Physik Kursmaterialien</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+    <style>
+        #canvas-container {
+            width: 100%;
+            height: 600px;
+            background: #f8fafc;
+            border-radius: 8px;
+            position: relative;
+            margin: 2rem 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .vector-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .control-panel {
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .coordinate-input {
+            margin: 1rem 0;
+        }
+
+        .coordinate-input label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .coordinate-input input[type="range"] {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+
+        .value-display {
+            display: inline-block;
+            min-width: 60px;
+            text-align: right;
+            font-family: monospace;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .vector-info {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        .vector-info h4 {
+            margin-top: 0;
+            color: #1e293b;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.5rem 0;
+            font-family: monospace;
+        }
+
+        .legend {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 12px;
+            z-index: 10;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0.3rem 0;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            margin-right: 8px;
+        }
+
+        .animation-controls {
+            margin: 1rem 0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>3D-Vektor Visualisierung</h1>
+            <p class="subtitle">Interaktive Darstellung von Vektoren im dreidimensionalen Raum</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="kinematik.html" class="nav-link">Kinematik</a>
+                <a href="kinematik-3d.html" class="nav-link active">3D-Vektor</a>
+                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="energie.html" class="nav-link">Energie</a>
+                <a href="impuls.html" class="nav-link">Impuls</a>
+                <a href="freierfall.html" class="nav-link">Freier Fall</a>
+                <a href="wurf.html" class="nav-link">Wurf</a>
+                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="formelsammlung.html" class="nav-link">Formeln</a>
+                <a href="rechner.html" class="nav-link">Rechner</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Vektoren im 3D-Raum</h2>
+            <p>Visualisieren Sie Ortsvektoren und verstehen Sie die dreidimensionale Darstellung.
+               Der Punkt bewegt sich im Raum und hinterlässt eine Bewegungsspur. Probieren Sie verschiedene Animationen aus!</p>
+            <p>Nutzen Sie die Maus zum Rotieren (linke Maustaste) und Zoomen (Mausrad).</p>
+        </section>
+
+        <div id="canvas-container">
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff0000;"></div>
+                    <span>X-Achse</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #00ff00;"></div>
+                    <span>Y-Achse</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #0000ff;"></div>
+                    <span>Z-Achse</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ffaa00;"></div>
+                    <span>Ortsvektor</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="vector-controls">
+            <div class="control-panel">
+                <h3>Vektorkomponenten</h3>
+
+                <div class="coordinate-input">
+                    <label>
+                        X-Komponente: <span class="value-display" id="xValue">5.0</span> m
+                    </label>
+                    <input type="range" id="xCoord" min="-10" max="10" step="0.1" value="5">
+                </div>
+
+                <div class="coordinate-input">
+                    <label>
+                        Y-Komponente: <span class="value-display" id="yValue">5.0</span> m
+                    </label>
+                    <input type="range" id="yCoord" min="-10" max="10" step="0.1" value="5">
+                </div>
+
+                <div class="coordinate-input">
+                    <label>
+                        Z-Komponente: <span class="value-display" id="zValue">5.0</span> m
+                    </label>
+                    <input type="range" id="zCoord" min="-10" max="10" step="0.1" value="5">
+                </div>
+
+                <div class="animation-controls">
+                    <h4>Bewegungsanimationen</h4>
+                    <div class="btn-group">
+                        <button class="btn-primary" onclick="startCircularMotion()">Kreisbewegung</button>
+                        <button class="btn-primary" onclick="startHelixMotion()">Schraubenlinie</button>
+                        <button class="btn-primary" onclick="startLissajous()">Lissajous</button>
+                        <button class="btn-primary" onclick="startSpherical()">Sphärisch</button>
+                        <button class="btn-primary" onclick="startOscillation()">Oszillation</button>
+                        <button class="btn-primary" onclick="startRandom()">Zufällig</button>
+                        <button class="btn-primary" onclick="stopAnimation()">Stop</button>
+                        <button class="btn-primary" onclick="resetView()">Zurücksetzen</button>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <label>
+                            <input type="checkbox" id="autoStart" checked>
+                            Auto-Start beim Laden
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <h3>Vektorinformationen</h3>
+
+                <div class="vector-info">
+                    <h4>Ortsvektor</h4>
+                    <div class="info-row">
+                        <span>Vektor r:</span>
+                        <span id="vectorNotation">(5.0, 5.0, 5.0)</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Betrag |r|:</span>
+                        <span id="magnitude">8.66 m</span>
+                    </div>
+                </div>
+
+                <div class="vector-info">
+                    <h4>Winkel</h4>
+                    <div class="info-row">
+                        <span>θ (Polarwinkel):</span>
+                        <span id="theta">35.26°</span>
+                    </div>
+                    <div class="info-row">
+                        <span>φ (Azimutwinkel):</span>
+                        <span id="phi">45.00°</span>
+                    </div>
+                </div>
+
+                <div class="vector-info">
+                    <h4>Einheitsvektor</h4>
+                    <div class="info-row">
+                        <span>ê:</span>
+                        <span id="unitVector">(0.58, 0.58, 0.58)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <h3>Projektionen</h3>
+
+                <div class="vector-info">
+                    <h4>Auf Koordinatenebenen</h4>
+                    <div class="info-row">
+                        <span>XY-Ebene:</span>
+                        <span id="xyProj">(5.0, 5.0, 0.0)</span>
+                    </div>
+                    <div class="info-row">
+                        <span>XZ-Ebene:</span>
+                        <span id="xzProj">(5.0, 0.0, 5.0)</span>
+                    </div>
+                    <div class="info-row">
+                        <span>YZ-Ebene:</span>
+                        <span id="yzProj">(0.0, 5.0, 5.0)</span>
+                    </div>
+                </div>
+
+                <div class="vector-info">
+                    <h4>Darstellung</h4>
+                    <div style="margin: 0.5rem 0;">
+                        <label>
+                            <input type="checkbox" id="showGrid" checked onchange="toggleGrid()">
+                            Gitter anzeigen
+                        </label>
+                    </div>
+                    <div style="margin: 0.5rem 0;">
+                        <label>
+                            <input type="checkbox" id="showProjections" checked onchange="toggleProjections()">
+                            Projektionen anzeigen
+                        </label>
+                    </div>
+                    <div style="margin: 0.5rem 0;">
+                        <label>
+                            <input type="checkbox" id="showTrail" checked onchange="toggleTrail()">
+                            Bewegungsspur anzeigen
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-list">
+            <div class="formula-item">
+                <h4>Wichtige Formeln</h4>
+                <div class="formula">
+                    <strong>Ortsvektor:</strong><br>
+                    r⃗ = (x, y, z) = x·e⃗ₓ + y·e⃗ᵧ + z·e⃗ᵤ<br><br>
+
+                    <strong>Betrag (Länge):</strong><br>
+                    |r⃗| = √(x² + y² + z²)<br><br>
+
+                    <strong>Einheitsvektor:</strong><br>
+                    ê = r⃗ / |r⃗|<br><br>
+
+                    <strong>Kugelkoordinaten:</strong><br>
+                    θ = arccos(z / |r⃗|) (Polarwinkel)<br>
+                    φ = arctan(y / x) (Azimutwinkel)
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script>
+        let scene, camera, renderer, controls;
+        let vectorArrow, pointSphere;
+        let gridHelper;
+        let projectionLines = [];
+        let animationId = null;
+        let trailPoints = [];
+        let trailLine = null;
+
+        function init() {
+            const container = document.getElementById('canvas-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // Szene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf8fafc);
+
+            // Kamera
+            camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            camera.position.set(15, 15, 15);
+            camera.lookAt(0, 0, 0);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(width, height);
+            container.appendChild(renderer.domElement);
+
+            // OrbitControls (einfache Version ohne Import)
+            addOrbitControls();
+
+            // Koordinatenachsen
+            const axesHelper = new THREE.AxesHelper(12);
+            scene.add(axesHelper);
+
+            // Gitter
+            gridHelper = new THREE.GridHelper(20, 20, 0x888888, 0xcccccc);
+            scene.add(gridHelper);
+
+            // Achsenbeschriftungen
+            createAxisLabels();
+
+            // Vektor-Pfeil
+            const direction = new THREE.Vector3(5, 5, 5).normalize();
+            const origin = new THREE.Vector3(0, 0, 0);
+            const length = Math.sqrt(5*5 + 5*5 + 5*5);
+            const color = 0xffaa00;
+            vectorArrow = new THREE.ArrowHelper(direction, origin, length, color, 0.5, 0.3);
+            scene.add(vectorArrow);
+
+            // Punkt am Ende des Vektors
+            const sphereGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+            const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xff6600 });
+            pointSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            pointSphere.position.set(5, 5, 5);
+            scene.add(pointSphere);
+
+            // Projektionslinien
+            createProjectionLines();
+
+            // Event Listeners
+            document.getElementById('xCoord').addEventListener('input', updateVector);
+            document.getElementById('yCoord').addEventListener('input', updateVector);
+            document.getElementById('zCoord').addEventListener('input', updateVector);
+
+            window.addEventListener('resize', onWindowResize);
+
+            animate();
+        }
+
+        function createAxisLabels() {
+            const labels = [
+                { text: 'X', color: '#ff0000', pos: new THREE.Vector3(13, 0, 0) },
+                { text: 'Y', color: '#00ff00', pos: new THREE.Vector3(0, 13, 0) },
+                { text: 'Z', color: '#0000ff', pos: new THREE.Vector3(0, 0, 13) }
+            ];
+
+            labels.forEach(label => {
+                // Für jedes Label ein eigenes Canvas erstellen
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 64;
+                canvas.height = 64;
+
+                context.font = 'Bold 48px Arial';
+                context.fillStyle = label.color;
+                context.textAlign = 'center';
+                context.fillText(label.text, 32, 48);
+
+                const texture = new THREE.CanvasTexture(canvas);
+                const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+                const sprite = new THREE.Sprite(spriteMaterial);
+                sprite.position.copy(label.pos);
+                sprite.scale.set(2, 2, 1);
+                scene.add(sprite);
+            });
+        }
+
+        function createProjectionLines() {
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: 0x888888,
+                opacity: 0.5,
+                transparent: true,
+                linewidth: 1
+            });
+
+            for (let i = 0; i < 3; i++) {
+                const geometry = new THREE.BufferGeometry();
+                const line = new THREE.Line(geometry, lineMaterial);
+                scene.add(line);
+                projectionLines.push(line);
+            }
+
+            updateProjectionLines(5, 5, 5);
+        }
+
+        function updateProjectionLines(x, y, z) {
+            // XY-Ebene Projektion (von Punkt nach unten auf z=0)
+            const xyPoints = [
+                new THREE.Vector3(x, y, z),
+                new THREE.Vector3(x, y, 0)
+            ];
+            projectionLines[0].geometry.setFromPoints(xyPoints);
+
+            // XZ-Ebene Projektion
+            const xzPoints = [
+                new THREE.Vector3(x, y, z),
+                new THREE.Vector3(x, 0, z)
+            ];
+            projectionLines[1].geometry.setFromPoints(xzPoints);
+
+            // YZ-Ebene Projektion
+            const yzPoints = [
+                new THREE.Vector3(x, y, z),
+                new THREE.Vector3(0, y, z)
+            ];
+            projectionLines[2].geometry.setFromPoints(yzPoints);
+        }
+
+        function updateVector() {
+            const x = parseFloat(document.getElementById('xCoord').value);
+            const y = parseFloat(document.getElementById('yCoord').value);
+            const z = parseFloat(document.getElementById('zCoord').value);
+
+            // Werte anzeigen
+            document.getElementById('xValue').textContent = x.toFixed(1);
+            document.getElementById('yValue').textContent = y.toFixed(1);
+            document.getElementById('zValue').textContent = z.toFixed(1);
+
+            // Vektor aktualisieren
+            const length = Math.sqrt(x*x + y*y + z*z);
+            if (length > 0) {
+                const direction = new THREE.Vector3(x, y, z).normalize();
+                vectorArrow.setDirection(direction);
+                vectorArrow.setLength(length, length * 0.1, length * 0.05);
+            }
+
+            // Punkt aktualisieren
+            pointSphere.position.set(x, y, z);
+
+            // Projektionslinien aktualisieren
+            updateProjectionLines(x, y, z);
+
+            // Informationen aktualisieren
+            updateInfo(x, y, z);
+        }
+
+        function updateInfo(x, y, z) {
+            const magnitude = Math.sqrt(x*x + y*y + z*z);
+
+            // Vektornotation
+            document.getElementById('vectorNotation').textContent =
+                `(${x.toFixed(1)}, ${y.toFixed(1)}, ${z.toFixed(1)})`;
+
+            // Betrag
+            document.getElementById('magnitude').textContent = magnitude.toFixed(2) + ' m';
+
+            // Winkel
+            const theta = magnitude > 0 ? Math.acos(z / magnitude) * 180 / Math.PI : 0;
+            const phi = Math.atan2(y, x) * 180 / Math.PI;
+            document.getElementById('theta').textContent = theta.toFixed(2) + '°';
+            document.getElementById('phi').textContent = phi.toFixed(2) + '°';
+
+            // Einheitsvektor
+            if (magnitude > 0) {
+                const ux = x / magnitude;
+                const uy = y / magnitude;
+                const uz = z / magnitude;
+                document.getElementById('unitVector').textContent =
+                    `(${ux.toFixed(2)}, ${uy.toFixed(2)}, ${uz.toFixed(2)})`;
+            }
+
+            // Projektionen
+            document.getElementById('xyProj').textContent = `(${x.toFixed(1)}, ${y.toFixed(1)}, 0.0)`;
+            document.getElementById('xzProj').textContent = `(${x.toFixed(1)}, 0.0, ${z.toFixed(1)})`;
+            document.getElementById('yzProj').textContent = `(0.0, ${y.toFixed(1)}, ${z.toFixed(1)})`;
+        }
+
+        function addOrbitControls() {
+            let isDragging = false;
+            let previousMousePosition = { x: 0, y: 0 };
+            let rotationSpeed = 0.005;
+
+            renderer.domElement.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            renderer.domElement.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const deltaX = e.clientX - previousMousePosition.x;
+                    const deltaY = e.clientY - previousMousePosition.y;
+
+                    const phi = deltaX * rotationSpeed;
+                    const theta = deltaY * rotationSpeed;
+
+                    const position = camera.position;
+                    const radius = Math.sqrt(position.x**2 + position.y**2 + position.z**2);
+
+                    let currentTheta = Math.acos(position.y / radius);
+                    let currentPhi = Math.atan2(position.z, position.x);
+
+                    currentTheta = Math.max(0.1, Math.min(Math.PI - 0.1, currentTheta - theta));
+                    currentPhi += phi;
+
+                    position.x = radius * Math.sin(currentTheta) * Math.cos(currentPhi);
+                    position.y = radius * Math.cos(currentTheta);
+                    position.z = radius * Math.sin(currentTheta) * Math.sin(currentPhi);
+
+                    camera.lookAt(0, 0, 0);
+                    previousMousePosition = { x: e.clientX, y: e.clientY };
+                }
+            });
+
+            renderer.domElement.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            renderer.domElement.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY * 0.01;
+                const position = camera.position;
+                const length = Math.sqrt(position.x**2 + position.y**2 + position.z**2);
+                const newLength = Math.max(5, Math.min(50, length + delta));
+                const scale = newLength / length;
+                position.multiplyScalar(scale);
+            });
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('canvas-container');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function toggleGrid() {
+            gridHelper.visible = document.getElementById('showGrid').checked;
+        }
+
+        function toggleProjections() {
+            const visible = document.getElementById('showProjections').checked;
+            projectionLines.forEach(line => line.visible = visible);
+        }
+
+        function toggleTrail() {
+            const show = document.getElementById('showTrail').checked;
+            if (trailLine) {
+                trailLine.visible = show;
+            }
+            if (!show) {
+                trailPoints = [];
+                if (trailLine) {
+                    scene.remove(trailLine);
+                    trailLine = null;
+                }
+            }
+        }
+
+        function addTrailPoint(x, y, z) {
+            if (!document.getElementById('showTrail').checked) return;
+
+            trailPoints.push(new THREE.Vector3(x, y, z));
+            if (trailPoints.length > 200) {
+                trailPoints.shift();
+            }
+
+            if (trailLine) {
+                scene.remove(trailLine);
+            }
+
+            const geometry = new THREE.BufferGeometry().setFromPoints(trailPoints);
+            const material = new THREE.LineBasicMaterial({ color: 0xff00ff, opacity: 0.6, transparent: true });
+            trailLine = new THREE.Line(geometry, material);
+            scene.add(trailLine);
+        }
+
+        function startCircularMotion() {
+            stopAnimation();
+            let t = 0;
+            const radius = 7;
+            const speed = 0.02;
+
+            function animateCircle() {
+                const x = radius * Math.cos(t);
+                const y = radius * Math.sin(t);
+                const z = 5;
+
+                document.getElementById('xCoord').value = x;
+                document.getElementById('yCoord').value = y;
+                document.getElementById('zCoord').value = z;
+                updateVector();
+                addTrailPoint(x, y, z);
+
+                t += speed;
+                animationId = requestAnimationFrame(animateCircle);
+            }
+
+            animateCircle();
+        }
+
+        function startHelixMotion() {
+            stopAnimation();
+            let t = 0;
+            const radius = 5;
+            const speed = 0.03;
+
+            function animateHelix() {
+                const x = radius * Math.cos(t);
+                const y = radius * Math.sin(t);
+                const z = (t % (4 * Math.PI)) - 2 * Math.PI;
+
+                document.getElementById('xCoord').value = x;
+                document.getElementById('yCoord').value = y;
+                document.getElementById('zCoord').value = z;
+                updateVector();
+                addTrailPoint(x, y, z);
+
+                t += speed;
+                animationId = requestAnimationFrame(animateHelix);
+            }
+
+            animateHelix();
+        }
+
+        function startLissajous() {
+            stopAnimation();
+            let t = 0;
+            const speed = 0.04;
+
+            function animateLissajous() {
+                const x = 7 * Math.sin(3 * t);
+                const y = 7 * Math.sin(2 * t);
+                const z = 7 * Math.sin(5 * t + Math.PI / 4);
+
+                document.getElementById('xCoord').value = x;
+                document.getElementById('yCoord').value = y;
+                document.getElementById('zCoord').value = z;
+                updateVector();
+                addTrailPoint(x, y, z);
+
+                t += speed;
+                animationId = requestAnimationFrame(animateLissajous);
+            }
+
+            animateLissajous();
+        }
+
+        function startSpherical() {
+            stopAnimation();
+            let theta = 0;
+            let phi = 0;
+            const radius = 8;
+            const speedTheta = 0.02;
+            const speedPhi = 0.03;
+
+            function animateSpherical() {
+                const x = radius * Math.sin(theta) * Math.cos(phi);
+                const y = radius * Math.sin(theta) * Math.sin(phi);
+                const z = radius * Math.cos(theta);
+
+                document.getElementById('xCoord').value = x;
+                document.getElementById('yCoord').value = y;
+                document.getElementById('zCoord').value = z;
+                updateVector();
+                addTrailPoint(x, y, z);
+
+                theta += speedTheta;
+                phi += speedPhi;
+
+                // Begrenze theta auf [0, PI]
+                if (theta > Math.PI) theta = 0;
+
+                animationId = requestAnimationFrame(animateSpherical);
+            }
+
+            animateSpherical();
+        }
+
+        function startOscillation() {
+            stopAnimation();
+            let t = 0;
+            const speed = 0.05;
+            const amplitude = 8;
+
+            function animateOscillation() {
+                const x = amplitude * Math.sin(t);
+                const y = amplitude * Math.sin(t + Math.PI / 3);
+                const z = amplitude * Math.sin(t + 2 * Math.PI / 3);
+
+                document.getElementById('xCoord').value = x;
+                document.getElementById('yCoord').value = y;
+                document.getElementById('zCoord').value = z;
+                updateVector();
+                addTrailPoint(x, y, z);
+
+                t += speed;
+                animationId = requestAnimationFrame(animateOscillation);
+            }
+
+            animateOscillation();
+        }
+
+        function startRandom() {
+            stopAnimation();
+            let targetX = Math.random() * 20 - 10;
+            let targetY = Math.random() * 20 - 10;
+            let targetZ = Math.random() * 20 - 10;
+            let changeCounter = 0;
+
+            function animateRandom() {
+                const currentX = parseFloat(document.getElementById('xCoord').value);
+                const currentY = parseFloat(document.getElementById('yCoord').value);
+                const currentZ = parseFloat(document.getElementById('zCoord').value);
+
+                // Sanft zum Ziel bewegen
+                const speed = 0.05;
+                const x = currentX + (targetX - currentX) * speed;
+                const y = currentY + (targetY - currentY) * speed;
+                const z = currentZ + (targetZ - currentZ) * speed;
+
+                document.getElementById('xCoord').value = x;
+                document.getElementById('yCoord').value = y;
+                document.getElementById('zCoord').value = z;
+                updateVector();
+                addTrailPoint(x, y, z);
+
+                changeCounter++;
+                // Neues Ziel nach 100 Frames
+                if (changeCounter > 100) {
+                    targetX = Math.random() * 20 - 10;
+                    targetY = Math.random() * 20 - 10;
+                    targetZ = Math.random() * 20 - 10;
+                    changeCounter = 0;
+                }
+
+                animationId = requestAnimationFrame(animateRandom);
+            }
+
+            animateRandom();
+        }
+
+        function stopAnimation() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+
+        function resetView() {
+            stopAnimation();
+            document.getElementById('xCoord').value = 5;
+            document.getElementById('yCoord').value = 5;
+            document.getElementById('zCoord').value = 5;
+            updateVector();
+
+            camera.position.set(15, 15, 15);
+            camera.lookAt(0, 0, 0);
+
+            trailPoints = [];
+            if (trailLine) {
+                scene.remove(trailLine);
+                trailLine = null;
+            }
+        }
+
+        // Initialisierung beim Laden
+        window.addEventListener('load', () => {
+            init();
+            updateVector();
+
+            // Auto-Start Animation
+            if (document.getElementById('autoStart').checked) {
+                // Starte eine zufällige Animation
+                setTimeout(() => {
+                    startLissajous();
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

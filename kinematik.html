@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinematik-Simulator | Physik Kursmaterialien</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Kinematik-Simulator</h1>
+            <p class="subtitle">Interaktive Visualisierung von Bewegungen</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="kinematik.html" class="nav-link active">Kinematik</a>
+                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
+                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
+                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="energie.html" class="nav-link">Energie</a>
+                <a href="impuls.html" class="nav-link">Impuls</a>
+                <a href="freierfall.html" class="nav-link">Freier Fall</a>
+                <a href="wurf.html" class="nav-link">Wurf</a>
+                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="formelsammlung.html" class="nav-link">Formeln</a>
+                <a href="rechner.html" class="nav-link">Rechner</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Bewegungssimulator</h2>
+            <p>Visualisieren Sie verschiedene Bewegungsarten und verstehen Sie die Zusammenhänge zwischen Weg, Geschwindigkeit und Beschleunigung.</p>
+        </section>
+
+        <div class="canvas-container">
+            <h3>Bewegungsdiagramm</h3>
+            <canvas id="bewegungsCanvas" width="800" height="400"></canvas>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="bewegungsTyp">Bewegungstyp:</label>
+                    <select id="bewegungsTyp" onchange="updateSimulation()">
+                        <option value="gleichfoermig">Gleichförmige Bewegung</option>
+                        <option value="beschleunigt">Gleichmäßig beschleunigte Bewegung</option>
+                        <option value="verzoegert">Verzögerte Bewegung (Bremsen)</option>
+                        <option value="ruhend">Ruhezustand</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="anfangsgeschwindigkeit">Anfangsgeschwindigkeit v₀ (m/s): <span id="v0Value">10</span></label>
+                    <input type="range" id="anfangsgeschwindigkeit" min="0" max="50" value="10" oninput="updateSimulation()">
+                </div>
+
+                <div class="control-group">
+                    <label for="beschleunigung">Beschleunigung a (m/s²): <span id="aValue">5</span></label>
+                    <input type="range" id="beschleunigung" min="-10" max="10" step="0.5" value="5" oninput="updateSimulation()">
+                </div>
+
+                <div class="control-group">
+                    <label for="zeitspanne">Zeitspanne (s): <span id="tValue">10</span></label>
+                    <input type="range" id="zeitspanne" min="1" max="20" value="10" oninput="updateSimulation()">
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="startAnimation()" style="margin-top: 1rem; margin-right: 0.5rem;">Animation starten</button>
+            <button class="btn-primary" onclick="stopAnimation()">Animation stoppen</button>
+        </div>
+
+        <!-- Diagramme -->
+        <div class="calculator-grid" style="margin-top: 2rem;">
+            <div class="calculator-card">
+                <h3>Weg-Zeit-Diagramm</h3>
+                <canvas id="wegZeitCanvas" width="350" height="250"></canvas>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Geschwindigkeit-Zeit-Diagramm</h3>
+                <canvas id="geschwindigkeitZeitCanvas" width="350" height="250"></canvas>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Beschleunigung-Zeit-Diagramm</h3>
+                <canvas id="beschleunigungZeitCanvas" width="350" height="250"></canvas>
+            </div>
+        </div>
+
+        <!-- Berechnete Werte -->
+        <div class="intro-section" style="margin-top: 2rem;">
+            <h3>Berechnete Werte</h3>
+            <div id="berechnetWerte">
+                <p>Wählen Sie Parameter und klicken Sie auf "Berechnen"</p>
+            </div>
+            <button class="btn-primary" onclick="berechneWerte()">Werte berechnen</button>
+        </div>
+
+        <!-- Formeln -->
+        <div class="formula-list" style="margin-top: 2rem;">
+            <div class="formula-item">
+                <h4>Verwendete Formeln</h4>
+                <div class="formula">
+                    Gleichförmige Bewegung:<br>
+                    s(t) = v₀ · t<br>
+                    v(t) = v₀ (konstant)<br>
+                    a(t) = 0<br><br>
+
+                    Gleichmäßig beschleunigte Bewegung:<br>
+                    s(t) = v₀ · t + (a/2) · t²<br>
+                    v(t) = v₀ + a · t<br>
+                    a(t) = a (konstant)
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        let animationId = null;
+        let animationTime = 0;
+
+        function updateSimulation() {
+            const typ = document.getElementById('bewegungsTyp').value;
+            const v0 = parseFloat(document.getElementById('anfangsgeschwindigkeit').value);
+            const a = parseFloat(document.getElementById('beschleunigung').value);
+            const tMax = parseFloat(document.getElementById('zeitspanne').value);
+
+            document.getElementById('v0Value').textContent = v0.toFixed(1);
+            document.getElementById('aValue').textContent = a.toFixed(1);
+            document.getElementById('tValue').textContent = tMax.toFixed(0);
+
+            // Parameter an Bewegungstyp anpassen
+            if (typ === 'gleichfoermig') {
+                document.getElementById('beschleunigung').disabled = true;
+                zeichneDiagramme(v0, 0, tMax);
+            } else if (typ === 'ruhend') {
+                document.getElementById('anfangsgeschwindigkeit').disabled = true;
+                document.getElementById('beschleunigung').disabled = true;
+                zeichneDiagramme(0, 0, tMax);
+            } else if (typ === 'verzoegert') {
+                document.getElementById('anfangsgeschwindigkeit').disabled = false;
+                document.getElementById('beschleunigung').disabled = false;
+                zeichneDiagramme(v0, -Math.abs(a), tMax);
+            } else {
+                document.getElementById('anfangsgeschwindigkeit').disabled = false;
+                document.getElementById('beschleunigung').disabled = false;
+                zeichneDiagramme(v0, a, tMax);
+            }
+        }
+
+        function zeichneDiagramme(v0, a, tMax) {
+            zeichneWegZeitDiagramm(v0, a, tMax);
+            zeichneGeschwindigkeitZeitDiagramm(v0, a, tMax);
+            zeichneBeschleunigungZeitDiagramm(a, tMax, v0);
+            zeichneBewegung(v0, a, tMax, 0);
+        }
+
+        function zeichneWegZeitDiagramm(v0, a, tMax) {
+            const canvas = document.getElementById('wegZeitCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Achsen
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(40, height - 40);
+            ctx.lineTo(width - 20, height - 40);
+            ctx.moveTo(40, height - 40);
+            ctx.lineTo(40, 20);
+            ctx.stroke();
+
+            // Beschriftung
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '12px Arial';
+            ctx.fillText('t (s)', width - 30, height - 25);
+            ctx.fillText('s (m)', 10, 30);
+
+            // Funktion zeichnen
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            const scaleX = (width - 60) / tMax;
+            const sMax = v0 * tMax + 0.5 * a * tMax * tMax;
+            const scaleY = (height - 60) / Math.max(Math.abs(sMax), 10);
+
+            for (let t = 0; t <= tMax; t += 0.1) {
+                const s = v0 * t + 0.5 * a * t * t;
+                const x = 40 + t * scaleX;
+                const y = height - 40 - s * scaleY;
+
+                if (t === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+        }
+
+        function zeichneGeschwindigkeitZeitDiagramm(v0, a, tMax) {
+            const canvas = document.getElementById('geschwindigkeitZeitCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Achsen
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(40, height - 40);
+            ctx.lineTo(width - 20, height - 40);
+            ctx.moveTo(40, height - 40);
+            ctx.lineTo(40, 20);
+            ctx.stroke();
+
+            // Beschriftung
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '12px Arial';
+            ctx.fillText('t (s)', width - 30, height - 25);
+            ctx.fillText('v (m/s)', 5, 30);
+
+            // Funktion zeichnen
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            const scaleX = (width - 60) / tMax;
+            const vMax = v0 + a * tMax;
+            const scaleY = (height - 60) / Math.max(Math.abs(vMax), Math.abs(v0), 10);
+
+            for (let t = 0; t <= tMax; t += 0.1) {
+                const v = v0 + a * t;
+                const x = 40 + t * scaleX;
+                const y = height - 40 - v * scaleY;
+
+                if (t === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+        }
+
+        function zeichneBeschleunigungZeitDiagramm(a, tMax, v0 = 0) {
+            const canvas = document.getElementById('beschleunigungZeitCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Achsen
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(40, height - 40);
+            ctx.lineTo(width - 20, height - 40);
+            ctx.moveTo(40, height - 40);
+            ctx.lineTo(40, 20);
+            ctx.stroke();
+
+            // Beschriftung
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '12px Arial';
+            ctx.fillText('t (s)', width - 30, height - 25);
+            ctx.fillText('a (m/s²)', 5, 30);
+
+            // Funktion zeichnen (konstante Linie)
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            const scaleX = (width - 60) / tMax;
+            const scaleY = (height - 60) / Math.max(Math.abs(a), 5);
+
+            const y = height - 40 - a * scaleY;
+            ctx.moveTo(40, y);
+            ctx.lineTo(40 + tMax * scaleX, y);
+            ctx.stroke();
+        }
+
+        function zeichneBewegung(v0, a, tMax, currentTime) {
+            const canvas = document.getElementById('bewegungsCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Boden
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(0, height - 50, width, 50);
+
+            // Zeitachse
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(50, height - 100);
+            ctx.lineTo(width - 50, height - 100);
+            ctx.stroke();
+
+            // Skala
+            const sMax = v0 * tMax + 0.5 * a * tMax * tMax;
+            const scale = (width - 100) / Math.max(Math.abs(sMax), 50);
+
+            // Aktuelle Position und Geschwindigkeit berechnen
+            const s = v0 * currentTime + 0.5 * a * currentTime * currentTime;
+            const v = v0 + a * currentTime;
+
+            const x = 50 + s * scale;
+
+            // Objekt (Ball)
+            ctx.fillStyle = '#2563eb';
+            ctx.beginPath();
+            ctx.arc(x, height - 100, 20, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Geschwindigkeitspfeil
+            const arrowLength = Math.min(Math.abs(v) * 5, 100);
+            if (v > 0.1) {
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x, height - 100);
+                ctx.lineTo(x + arrowLength, height - 100);
+                // Pfeilspitze
+                ctx.lineTo(x + arrowLength - 10, height - 110);
+                ctx.moveTo(x + arrowLength, height - 100);
+                ctx.lineTo(x + arrowLength - 10, height - 90);
+                ctx.stroke();
+            } else if (v < -0.1) {
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x, height - 100);
+                ctx.lineTo(x - arrowLength, height - 100);
+                // Pfeilspitze
+                ctx.lineTo(x - arrowLength + 10, height - 110);
+                ctx.moveTo(x - arrowLength, height - 100);
+                ctx.lineTo(x - arrowLength + 10, height - 90);
+                ctx.stroke();
+            }
+
+            // Werte anzeigen
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '14px Arial';
+            ctx.fillText(`t = ${currentTime.toFixed(2)} s`, 60, 30);
+            ctx.fillText(`s = ${s.toFixed(2)} m`, 60, 50);
+            ctx.fillText(`v = ${v.toFixed(2)} m/s`, 60, 70);
+            ctx.fillText(`a = ${a.toFixed(2)} m/s²`, 60, 90);
+        }
+
+        function startAnimation() {
+            stopAnimation();
+
+            const typ = document.getElementById('bewegungsTyp').value;
+            const v0Input = parseFloat(document.getElementById('anfangsgeschwindigkeit').value);
+            const aInput = parseFloat(document.getElementById('beschleunigung').value);
+            const tMax = parseFloat(document.getElementById('zeitspanne').value);
+
+            // Parameter je nach Bewegungstyp anpassen
+            let v0, a;
+            if (typ === 'gleichfoermig') {
+                v0 = v0Input;
+                a = 0; // Bei gleichförmiger Bewegung ist a immer 0
+            } else if (typ === 'ruhend') {
+                v0 = 0;
+                a = 0;
+            } else if (typ === 'verzoegert') {
+                v0 = v0Input;
+                a = -Math.abs(aInput);
+            } else {
+                v0 = v0Input;
+                a = aInput;
+            }
+
+            animationTime = 0;
+            const fps = 30;
+            const dt = 1 / fps;
+
+            animationId = setInterval(() => {
+                if (animationTime >= tMax) {
+                    zeichneBewegung(v0, a, tMax, tMax);
+                    stopAnimation();
+                } else {
+                    zeichneBewegung(v0, a, tMax, animationTime);
+                    animationTime += dt;
+
+                    // Sicherstellen, dass wir nicht über tMax hinausgehen
+                    if (animationTime > tMax) {
+                        animationTime = tMax;
+                    }
+                }
+            }, 1000 / fps);
+        }
+
+        function stopAnimation() {
+            if (animationId) {
+                clearInterval(animationId);
+                animationId = null;
+            }
+        }
+
+        function berechneWerte() {
+            const typ = document.getElementById('bewegungsTyp').value;
+            const v0Input = parseFloat(document.getElementById('anfangsgeschwindigkeit').value);
+            const aInput = parseFloat(document.getElementById('beschleunigung').value);
+            const tMax = parseFloat(document.getElementById('zeitspanne').value);
+
+            // Parameter je nach Bewegungstyp anpassen
+            let v0, a;
+            if (typ === 'gleichfoermig') {
+                v0 = v0Input;
+                a = 0;
+            } else if (typ === 'ruhend') {
+                v0 = 0;
+                a = 0;
+            } else if (typ === 'verzoegert') {
+                v0 = v0Input;
+                a = -Math.abs(aInput);
+            } else {
+                v0 = v0Input;
+                a = aInput;
+            }
+
+            const s = v0 * tMax + 0.5 * a * tMax * tMax;
+            const v = v0 + a * tMax;
+
+            document.getElementById('berechnetWerte').innerHTML = `
+                <div class="result">
+                    <strong>Nach ${tMax} Sekunden:</strong><br>
+                    Zurückgelegte Strecke: s = ${s.toFixed(2)} m<br>
+                    Endgeschwindigkeit: v = ${v.toFixed(2)} m/s = ${(v * 3.6).toFixed(2)} km/h<br>
+                    Durchschnittsgeschwindigkeit: v̅ = ${(s / tMax).toFixed(2)} m/s
+                </div>
+            `;
+        }
+
+        // Initialisierung
+        updateSimulation();
+    </script>
+</body>
+</html>

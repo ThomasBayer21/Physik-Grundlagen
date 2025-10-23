@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impuls-Simulator | Physik Interaktiv</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Impuls-Simulator</h1>
+            <p class="subtitle">Stöße und Impulserhaltung interaktiv erleben</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="kinematik.html" class="nav-link">Kinematik</a>
+                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
+                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
+                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="energie.html" class="nav-link">Energie</a>
+                <a href="impuls.html" class="nav-link active">Impuls</a>
+                <a href="freierfall.html" class="nav-link">Freier Fall</a>
+                <a href="wurf.html" class="nav-link">Wurf</a>
+                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="formelsammlung.html" class="nav-link">Formeln</a>
+                <a href="rechner.html" class="nav-link">Rechner</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Stöße simulieren</h2>
+            <p>Verstehen Sie Impulserhaltung durch Simulation von elastischen und inelastischen Stößen.</p>
+        </section>
+
+        <!-- Stoß-Simulation -->
+        <div class="canvas-container">
+            <h3>Stoß zweier Körper</h3>
+            <canvas id="stossCanvas" width="800" height="400"></canvas>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="masse1">Masse 1 (kg): <span id="masse1Value">2.0</span></label>
+                    <input type="range" id="masse1" min="0.5" max="10" step="0.1" value="2.0" oninput="updateParameter()">
+                </div>
+
+                <div class="control-group">
+                    <label for="v1">Geschwindigkeit 1 (m/s): <span id="v1Value">5.0</span></label>
+                    <input type="range" id="v1" min="-10" max="10" step="0.5" value="5.0" oninput="updateParameter()">
+                </div>
+
+                <div class="control-group">
+                    <label for="masse2">Masse 2 (kg): <span id="masse2Value">3.0</span></label>
+                    <input type="range" id="masse2" min="0.5" max="10" step="0.1" value="3.0" oninput="updateParameter()">
+                </div>
+
+                <div class="control-group">
+                    <label for="v2">Geschwindigkeit 2 (m/s): <span id="v2Value">0.0</span></label>
+                    <input type="range" id="v2" min="-10" max="10" step="0.5" value="0.0" oninput="updateParameter()">
+                </div>
+
+                <div class="control-group">
+                    <label for="stossart">Stoßart:</label>
+                    <select id="stossart" onchange="updateParameter()">
+                        <option value="elastisch">Elastischer Stoß</option>
+                        <option value="inelastisch">Vollkommen inelastischer Stoß</option>
+                        <option value="teilelastisch">Teilelastischer Stoß (e=0.5)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="startStoss()" style="margin-right: 0.5rem;">Simulation starten</button>
+            <button class="btn-primary" onclick="stopStoss()">Stoppen</button>
+            <button class="btn-primary" onclick="resetStoss()">Zurücksetzen</button>
+        </div>
+
+        <!-- Berechnungen -->
+        <div class="calculator-grid" style="margin-top: 2rem;">
+            <div class="calculator-card">
+                <h3>Impuls vor dem Stoß</h3>
+                <div id="impulsVor">
+                    <p>Werte werden berechnet...</p>
+                </div>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Impuls nach dem Stoß</h3>
+                <div id="impulsNach">
+                    <p>Starten Sie die Simulation...</p>
+                </div>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Energiebilanz</h3>
+                <div id="energiebilanz">
+                    <p>Wird berechnet...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formeln -->
+        <div class="formula-list" style="margin-top: 2rem;">
+            <div class="formula-item">
+                <h4>Verwendete Formeln</h4>
+                <div class="formula">
+                    Impuls: p = m · v<br><br>
+                    <strong>Impulserhaltung:</strong><br>
+                    p<sub>vor</sub> = p<sub>nach</sub><br>
+                    m₁·v₁ + m₂·v₂ = m₁·u₁ + m₂·u₂<br><br>
+                    <strong>Elastischer Stoß:</strong><br>
+                    u₁ = [(m₁−m₂)·v₁ + 2·m₂·v₂] / (m₁+m₂)<br>
+                    u₂ = [2·m₁·v₁ + (m₂−m₁)·v₂] / (m₁+m₂)<br><br>
+                    <strong>Inelastischer Stoß:</strong><br>
+                    u = (m₁·v₁ + m₂·v₂) / (m₁+m₂)<br>
+                    (beide Körper kleben zusammen)
+                </div>
+                <p class="description">
+                    Der Impuls bleibt in einem abgeschlossenen System immer erhalten.
+                    Bei einem elastischen Stoß bleibt auch die kinetische Energie erhalten.
+                    Bei einem inelastischen Stoß wird ein Teil der Energie in andere Energieformen umgewandelt (Wärme, Verformung).
+                </p>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        let animationId = null;
+        let koerper1 = { x: 100, v: 5, m: 2, radius: 20 };
+        let koerper2 = { x: 600, v: 0, m: 3, radius: 25 };
+        let stossErfolgt = false;
+        let u1 = 0, u2 = 0;
+
+        function updateParameter() {
+            const m1 = parseFloat(document.getElementById('masse1').value);
+            const v1_input = parseFloat(document.getElementById('v1').value);
+            const m2 = parseFloat(document.getElementById('masse2').value);
+            const v2_input = parseFloat(document.getElementById('v2').value);
+
+            document.getElementById('masse1Value').textContent = m1.toFixed(1);
+            document.getElementById('v1Value').textContent = v1_input.toFixed(1);
+            document.getElementById('masse2Value').textContent = m2.toFixed(1);
+            document.getElementById('v2Value').textContent = v2_input.toFixed(1);
+
+            koerper1.m = m1;
+            koerper2.m = m2;
+            koerper1.radius = Math.max(15, Math.sqrt(m1) * 10);
+            koerper2.radius = Math.max(15, Math.sqrt(m2) * 10);
+
+            if (!animationId) {
+                koerper1.v = v1_input;
+                koerper2.v = v2_input;
+            }
+
+            berechneImpulsVor();
+        }
+
+        function resetStoss() {
+            stopStoss();
+            const v1_input = parseFloat(document.getElementById('v1').value);
+            const v2_input = parseFloat(document.getElementById('v2').value);
+
+            koerper1.x = 100;
+            koerper1.v = v1_input;
+            koerper2.x = 600;
+            koerper2.v = v2_input;
+            stossErfolgt = false;
+
+            zeichneStoss();
+            berechneImpulsVor();
+            document.getElementById('impulsNach').innerHTML = '<p>Starten Sie die Simulation...</p>';
+        }
+
+        function startStoss() {
+            if (animationId) return;
+
+            const fps = 60;
+            const dt = 1 / fps;
+            const pixelProMeter = 50;
+
+            animationId = setInterval(() => {
+                // Positionen aktualisieren
+                koerper1.x += koerper1.v * dt * pixelProMeter;
+                koerper2.x += koerper2.v * dt * pixelProMeter;
+
+                // Kollisionserkennung
+                const abstand = Math.abs(koerper1.x - koerper2.x);
+                const minAbstand = koerper1.radius + koerper2.radius;
+
+                if (!stossErfolgt && abstand <= minAbstand) {
+                    stossErfolgt = true;
+                    berechneStossGeschwindigkeiten();
+                }
+
+                zeichneStoss();
+
+                // Stoppen wenn beide aus dem Bild sind
+                if ((koerper1.x < -50 || koerper1.x > 850) &&
+                    (koerper2.x < -50 || koerper2.x > 850)) {
+                    stopStoss();
+                }
+            }, 1000 / fps);
+        }
+
+        function stopStoss() {
+            if (animationId) {
+                clearInterval(animationId);
+                animationId = null;
+            }
+        }
+
+        function berechneStossGeschwindigkeiten() {
+            const m1 = koerper1.m;
+            const v1 = koerper1.v;
+            const m2 = koerper2.m;
+            const v2 = koerper2.v;
+            const stossart = document.getElementById('stossart').value;
+
+            if (stossart === 'elastisch') {
+                // Elastischer Stoß
+                u1 = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2);
+                u2 = (2 * m1 * v1 + (m2 - m1) * v2) / (m1 + m2);
+            } else if (stossart === 'inelastisch') {
+                // Vollkommen inelastisch
+                u1 = u2 = (m1 * v1 + m2 * v2) / (m1 + m2);
+            } else {
+                // Teilelastisch mit e = 0.5
+                const e = 0.5;
+                u1 = (m1 * v1 + m2 * v2 - m2 * e * (v1 - v2)) / (m1 + m2);
+                u2 = (m1 * v1 + m2 * v2 + m1 * e * (v1 - v2)) / (m1 + m2);
+            }
+
+            koerper1.v = u1;
+            koerper2.v = u2;
+
+            berechneImpulsNach();
+            berechneEnergiebilanz(v1, v2);
+        }
+
+        function zeichneStoss() {
+            const canvas = document.getElementById('stossCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Mittellinie
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(0, height / 2);
+            ctx.lineTo(width, height / 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Körper 1
+            ctx.fillStyle = '#3b82f6';
+            ctx.beginPath();
+            ctx.arc(koerper1.x, height / 2, koerper1.radius, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.strokeStyle = '#1e40af';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Beschriftung Körper 1
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`m₁=${koerper1.m}kg`, koerper1.x, height / 2 - 2);
+            ctx.font = '10px Arial';
+            ctx.fillText(`v=${koerper1.v.toFixed(1)}`, koerper1.x, height / 2 + 8);
+
+            // Geschwindigkeitspfeil 1
+            if (Math.abs(koerper1.v) > 0.1) {
+                const arrowLength = Math.min(Math.abs(koerper1.v) * 10, 60);
+                const direction = koerper1.v > 0 ? 1 : -1;
+                const startX = koerper1.x;
+                const endX = koerper1.x + direction * arrowLength;
+
+                ctx.strokeStyle = '#3b82f6';
+                ctx.fillStyle = '#3b82f6';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(startX, height / 2 - koerper1.radius - 10);
+                ctx.lineTo(endX, height / 2 - koerper1.radius - 10);
+                ctx.stroke();
+
+                // Pfeilspitze
+                ctx.beginPath();
+                ctx.moveTo(endX, height / 2 - koerper1.radius - 10);
+                ctx.lineTo(endX - direction * 8, height / 2 - koerper1.radius - 15);
+                ctx.lineTo(endX - direction * 8, height / 2 - koerper1.radius - 5);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Körper 2
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(koerper2.x, height / 2, koerper2.radius, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.strokeStyle = '#059669';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Beschriftung Körper 2
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`m₂=${koerper2.m}kg`, koerper2.x, height / 2 - 2);
+            ctx.font = '10px Arial';
+            ctx.fillText(`v=${koerper2.v.toFixed(1)}`, koerper2.x, height / 2 + 8);
+
+            // Geschwindigkeitspfeil 2
+            if (Math.abs(koerper2.v) > 0.1) {
+                const arrowLength = Math.min(Math.abs(koerper2.v) * 10, 60);
+                const direction = koerper2.v > 0 ? 1 : -1;
+                const startX = koerper2.x;
+                const endX = koerper2.x + direction * arrowLength;
+
+                ctx.strokeStyle = '#10b981';
+                ctx.fillStyle = '#10b981';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(startX, height / 2 - koerper2.radius - 10);
+                ctx.lineTo(endX, height / 2 - koerper2.radius - 10);
+                ctx.stroke();
+
+                // Pfeilspitze
+                ctx.beginPath();
+                ctx.moveTo(endX, height / 2 - koerper2.radius - 10);
+                ctx.lineTo(endX - direction * 8, height / 2 - koerper2.radius - 15);
+                ctx.lineTo(endX - direction * 8, height / 2 - koerper2.radius - 5);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Stoß-Markierung
+            if (stossErfolgt) {
+                ctx.fillStyle = '#ef4444';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('STOSS!', width / 2, 30);
+            }
+        }
+
+        function berechneImpulsVor() {
+            const m1 = koerper1.m;
+            const v1 = koerper1.v;
+            const m2 = koerper2.m;
+            const v2 = koerper2.v;
+
+            const p1 = m1 * v1;
+            const p2 = m2 * v2;
+            const pGes = p1 + p2;
+
+            document.getElementById('impulsVor').innerHTML = `
+                <div class="result">
+                    <strong>Körper 1:</strong><br>
+                    p₁ = ${p1.toFixed(2)} kg·m/s<br><br>
+                    <strong>Körper 2:</strong><br>
+                    p₂ = ${p2.toFixed(2)} kg·m/s<br><br>
+                    <strong>Gesamtimpuls:</strong><br>
+                    p<sub>ges</sub> = ${pGes.toFixed(2)} kg·m/s
+                </div>
+            `;
+        }
+
+        function berechneImpulsNach() {
+            const m1 = koerper1.m;
+            const m2 = koerper2.m;
+
+            const p1_nach = m1 * u1;
+            const p2_nach = m2 * u2;
+            const pGes_nach = p1_nach + p2_nach;
+
+            document.getElementById('impulsNach').innerHTML = `
+                <div class="result">
+                    <strong>Körper 1:</strong><br>
+                    p₁' = ${p1_nach.toFixed(2)} kg·m/s<br>
+                    u₁ = ${u1.toFixed(2)} m/s<br><br>
+                    <strong>Körper 2:</strong><br>
+                    p₂' = ${p2_nach.toFixed(2)} kg·m/s<br>
+                    u₂ = ${u2.toFixed(2)} m/s<br><br>
+                    <strong>Gesamtimpuls:</strong><br>
+                    p<sub>ges</sub>' = ${pGes_nach.toFixed(2)} kg·m/s
+                </div>
+            `;
+        }
+
+        function berechneEnergiebilanz(v1, v2) {
+            const m1 = koerper1.m;
+            const m2 = koerper2.m;
+
+            const Ekin_vor = 0.5 * m1 * v1 * v1 + 0.5 * m2 * v2 * v2;
+            const Ekin_nach = 0.5 * m1 * u1 * u1 + 0.5 * m2 * u2 * u2;
+            const verlust = Ekin_vor - Ekin_nach;
+            const prozent = (verlust / Ekin_vor * 100);
+
+            document.getElementById('energiebilanz').innerHTML = `
+                <div class="result">
+                    <strong>Vorher:</strong><br>
+                    E<sub>kin,vor</sub> = ${Ekin_vor.toFixed(2)} J<br><br>
+                    <strong>Nachher:</strong><br>
+                    E<sub>kin,nach</sub> = ${Ekin_nach.toFixed(2)} J<br><br>
+                    <strong>Verlust:</strong><br>
+                    ΔE = ${verlust.toFixed(2)} J<br>
+                    (${prozent.toFixed(1)}%)
+                </div>
+            `;
+        }
+
+        // Initialisierung
+        updateParameter();
+        zeichneStoss();
+    </script>
+</body>
+</html>

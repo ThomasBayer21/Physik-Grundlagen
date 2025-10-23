@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktive Übungen | Physik Kursmaterialien</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Interaktive Übungen</h1>
+            <p class="subtitle">Übungsaufgaben mit Schritt-für-Schritt-Lösungen</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="kinematik.html" class="nav-link">Kinematik</a>
+                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
+                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
+                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="energie.html" class="nav-link">Energie</a>
+                <a href="impuls.html" class="nav-link">Impuls</a>
+                <a href="freierfall.html" class="nav-link">Freier Fall</a>
+                <a href="wurf.html" class="nav-link">Wurf</a>
+                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="formelsammlung.html" class="nav-link">Formeln</a>
+                <a href="rechner.html" class="nav-link">Rechner</a>
+                <a href="uebungen.html" class="nav-link active">Übungen</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Übungsaufgaben</h2>
+            <p>Bearbeiten Sie die Aufgaben selbstständig und klicken Sie dann auf "Lösung anzeigen", um die Schritt-für-Schritt-Lösung zu sehen.</p>
+        </section>
+
+        <!-- Aufgabe 1: Zeiteinheiten -->
+        <div class="exercise-card">
+            <h3>Aufgabe 1: Zeiteinheiten umrechnen</h3>
+            <div class="exercise-question">
+                <p>
+                    Die Vorlesung Physik hat am 13. Oktober 2025 um 09:45 Uhr begonnen.
+                    Der letzte Vorlesungstag ist der 26. Januar 2026, Vorlesungsende um 13:00 Uhr.
+                </p>
+                <p><strong>Aufgabe:</strong></p>
+                <p>a) Bestimmen Sie, wie lang dieser Zeitraum in Tagen ist.</p>
+                <p>b) Berechnen Sie die Dauer in Stunden.</p>
+                <p>c) Berechnen Sie die Dauer in Minuten.</p>
+            </div>
+            <button class="toggle-btn" onclick="toggleSolution('loesung1')">Lösung anzeigen</button>
+            <div class="solution" id="loesung1">
+                <h4>Lösung:</h4>
+                <div class="solution-step">
+                    <strong>Schritt 1:</strong> Tage zählen<br>
+                    - Oktober 2025: 13. bis 31. Oktober = 19 Tage (inkl. 13.10)<br>
+                    - November 2025: 30 Tage<br>
+                    - Dezember 2025: 31 Tage<br>
+                    - Januar 2026: 1. bis 26. Januar = 26 Tage<br>
+                    <strong>Gesamt: 19 + 30 + 31 + 26 = 106 Tage</strong>
+                </div>
+                <div class="solution-step">
+                    <strong>Schritt 2:</strong> In Stunden umrechnen<br>
+                    Aber: Nicht genau 106 volle Tage!<br>
+                    Start: 13.10. um 09:45 Uhr<br>
+                    Ende: 26.01. um 13:00 Uhr<br>
+                    Von 09:45 bis 13:00 = 3,25 Stunden mehr<br>
+                    <strong>Gesamt: 105 Tage + 3,25 Stunden = 105 × 24 + 3,25 = 2523,25 Stunden</strong>
+                </div>
+                <div class="solution-step">
+                    <strong>Schritt 3:</strong> In Minuten umrechnen<br>
+                    2523,25 Stunden × 60 Minuten/Stunde<br>
+                    <strong>= 151.395 Minuten</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aufgabe 2: Fehlerrechnung -->
+        <div class="exercise-card">
+            <h3>Aufgabe 2: Fehlerrechnung mit π</h3>
+            <div class="exercise-question">
+                <p>
+                    Welcher absolute und relative Fehler entsteht, wenn man statt der Kreiszahl π = 3.14159...
+                    die Näherung 22/7 verwendet?
+                </p>
+                <p><strong>Gegeben:</strong> π ≈ 3.14159265, Näherung: 22/7</p>
+            </div>
+            <button class="toggle-btn" onclick="toggleSolution('loesung2')">Lösung anzeigen</button>
+            <div class="solution" id="loesung2">
+                <h4>Lösung:</h4>
+                <div class="solution-step">
+                    <strong>Schritt 1:</strong> Näherung ausrechnen<br>
+                    22/7 = 3.142857...
+                </div>
+                <div class="solution-step">
+                    <strong>Schritt 2:</strong> Absoluten Fehler berechnen<br>
+                    f<sub>ABS</sub> = |m<sub>SOLL</sub> − m<sub>FALSCH</sub>|<br>
+                    f<sub>ABS</sub> = |3.14159265 − 3.142857|<br>
+                    <strong>f<sub>ABS</sub> ≈ 0.001264</strong>
+                </div>
+                <div class="solution-step">
+                    <strong>Schritt 3:</strong> Relativen Fehler berechnen<br>
+                    f<sub>REL</sub> = |f<sub>ABS</sub> / m<sub>SOLL</sub>|<br>
+                    f<sub>REL</sub> = 0.001264 / 3.14159265<br>
+                    f<sub>REL</sub> ≈ 0.000402<br>
+                    <strong>f<sub>REL</sub> ≈ 0.0402% (sehr genau!)</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aufgabe 3: Geschwindigkeit -->
+        <div class="exercise-card">
+            <h3>Aufgabe 3: Geschwindigkeitsberechnung</h3>
+            <div class="exercise-question">
+                <p>Ein Auto fährt eine Strecke von 450 km in 5 Stunden.</p>
+                <p><strong>Berechnen Sie:</strong></p>
+                <p>a) Die Durchschnittsgeschwindigkeit in km/h</p>
+                <p>b) Die Geschwindigkeit in m/s</p>
+            </div>
+            <button class="toggle-btn" onclick="toggleSolution('loesung3')">Lösung anzeigen</button>
+            <div class="solution" id="loesung3">
+                <h4>Lösung:</h4>
+                <div class="solution-step">
+                    <strong>a) Geschwindigkeit in km/h:</strong><br>
+                    Formel: v = s / t<br>
+                    v = 450 km / 5 h<br>
+                    <strong>v = 90 km/h</strong>
+                </div>
+                <div class="solution-step">
+                    <strong>b) Umrechnung in m/s:</strong><br>
+                    1 km/h = 1/3,6 m/s<br>
+                    v = 90 km/h ÷ 3,6<br>
+                    <strong>v = 25 m/s</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aufgabe 4: Beschleunigung -->
+        <div class="exercise-card">
+            <h3>Aufgabe 4: Beschleunigung beim Auto</h3>
+            <div class="exercise-question">
+                <p>Ein Auto beschleunigt aus dem Stand (v₀ = 0) in 8 Sekunden auf 100 km/h.</p>
+                <p><strong>Berechnen Sie:</strong></p>
+                <p>a) Die Beschleunigung in m/s²</p>
+                <p>b) Die zurückgelegte Strecke während der Beschleunigung</p>
+            </div>
+            <button class="toggle-btn" onclick="toggleSolution('loesung4')">Lösung anzeigen</button>
+            <div class="solution" id="loesung4">
+                <h4>Lösung:</h4>
+                <div class="solution-step">
+                    <strong>Schritt 1:</strong> Umrechnung der Geschwindigkeit<br>
+                    v = 100 km/h = 100/3,6 m/s ≈ 27,78 m/s
+                </div>
+                <div class="solution-step">
+                    <strong>a) Beschleunigung berechnen:</strong><br>
+                    Formel: a = (v − v₀) / t<br>
+                    a = (27,78 − 0) / 8<br>
+                    <strong>a ≈ 3,47 m/s²</strong>
+                </div>
+                <div class="solution-step">
+                    <strong>b) Strecke berechnen:</strong><br>
+                    Formel: s = v₀ · t + (a/2) · t²<br>
+                    s = 0 · 8 + (3,47/2) · 8²<br>
+                    s = 0 + 1,735 · 64<br>
+                    <strong>s ≈ 111 m</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aufgabe 5: Energie -->
+        <div class="exercise-card">
+            <h3>Aufgabe 5: Potentielle und kinetische Energie</h3>
+            <div class="exercise-question">
+                <p>Ein Ball mit der Masse m = 0,5 kg wird aus 20 m Höhe fallen gelassen.</p>
+                <p><strong>Berechnen Sie:</strong></p>
+                <p>a) Die potentielle Energie zu Beginn</p>
+                <p>b) Die Geschwindigkeit beim Aufprall (unter Vernachlässigung der Luftreibung)</p>
+                <p>Hinweis: Energieerhaltung: E<sub>pot</sub> = E<sub>kin</sub></p>
+            </div>
+            <button class="toggle-btn" onclick="toggleSolution('loesung5')">Lösung anzeigen</button>
+            <div class="solution" id="loesung5">
+                <h4>Lösung:</h4>
+                <div class="solution-step">
+                    <strong>a) Potentielle Energie:</strong><br>
+                    Formel: E<sub>pot</sub> = m · g · h<br>
+                    E<sub>pot</sub> = 0,5 kg · 9,81 m/s² · 20 m<br>
+                    <strong>E<sub>pot</sub> = 98,1 J</strong>
+                </div>
+                <div class="solution-step">
+                    <strong>b) Geschwindigkeit beim Aufprall:</strong><br>
+                    Energieerhaltung: E<sub>pot</sub> = E<sub>kin</sub><br>
+                    m · g · h = (1/2) · m · v²<br>
+                    Kürzen mit m:<br>
+                    g · h = (1/2) · v²<br>
+                    v² = 2 · g · h<br>
+                    v = √(2 · 9,81 · 20)<br>
+                    v = √392,4<br>
+                    <strong>v ≈ 19,8 m/s ≈ 71,3 km/h</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aufgabe 6: Kreisumfang Erde -->
+        <div class="exercise-card">
+            <h3>Aufgabe 6: Erdumfang (Eratosthenes)</h3>
+            <div class="exercise-question">
+                <p>
+                    Eratosthenes ermittelte den Erdumfang zu 240.000 Stadien.
+                    Der moderne Wert ist 40.008 km.
+                    Welchen relativen Fehler hat das Ergebnis, wenn ein olympisches Stadion
+                    zu 600 Fuß à 32,1 cm gerechnet wurde?
+                </p>
+            </div>
+            <button class="toggle-btn" onclick="toggleSolution('loesung6')">Lösung anzeigen</button>
+            <div class="solution" id="loesung6">
+                <h4>Lösung:</h4>
+                <div class="solution-step">
+                    <strong>Schritt 1:</strong> Stadion in Meter umrechnen<br>
+                    1 Stadion = 600 Fuß × 0,321 m/Fuß<br>
+                    1 Stadion = 192,6 m
+                </div>
+                <div class="solution-step">
+                    <strong>Schritt 2:</strong> Erdumfang nach Eratosthenes in km<br>
+                    U = 240.000 × 0,1926 km<br>
+                    <strong>U ≈ 46.224 km</strong>
+                </div>
+                <div class="solution-step">
+                    <strong>Schritt 3:</strong> Fehler berechnen<br>
+                    f<sub>ABS</sub> = |40.008 − 46.224| = 6.216 km<br>
+                    f<sub>REL</sub> = 6.216 / 40.008<br>
+                    f<sub>REL</sub> ≈ 0,1554<br>
+                    <strong>f<sub>REL</sub> ≈ 15,54%</strong><br>
+                    (Bei anderen Stadien-Längen ist der Fehler kleiner!)
+                </div>
+            </div>
+        </div>
+
+        <!-- Zusätzliche Übungen -->
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h3>Weitere Übungsmaterialien</h3>
+            <p>Für weitere Übungsaufgaben siehe:</p>
+            <ul style="margin-left: 2rem; margin-top: 1rem;">
+                <li><a href="Ueb01.pdf" target="_blank" style="color: var(--primary-color);">Übungsblatt 01 (PDF)</a> - 6 Aufgaben zu Zeiteinheiten, Fehlerrechnung und mehr</li>
+                <li><a href="PhysikStartaufgabeAufgabe.pdf" target="_blank" style="color: var(--primary-color);">Physik Startaufgabe (PDF)</a> - Einführungsaufgabe</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023/24 Physik Kurs | Alle Materialien sind urheberrechtlich geschützt</p>
+            <p class="footer-note">Die Verwendung der Materialien dient ausschließlich dem Studium und der Prüfungsvorbereitung</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = solution.previousElementSibling;
+
+            if (solution.classList.contains('visible')) {
+                solution.classList.remove('visible');
+                button.textContent = 'Lösung anzeigen';
+            } else {
+                solution.classList.add('visible');
+                button.textContent = 'Lösung verbergen';
+            }
+        }
+    </script>
+</body>
+</html>

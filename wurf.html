@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wurf-Simulator | Physik Interaktiv</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Wurf-Simulator</h1>
+            <p class="subtitle">Schiefer Wurf und Wurfparabel visualisiert</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="kinematik.html" class="nav-link">Kinematik</a>
+                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
+                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
+                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="energie.html" class="nav-link">Energie</a>
+                <a href="impuls.html" class="nav-link">Impuls</a>
+                <a href="freierfall.html" class="nav-link">Freier Fall</a>
+                <a href="wurf.html" class="nav-link active">Wurf</a>
+                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="formelsammlung.html" class="nav-link">Formeln</a>
+                <a href="rechner.html" class="nav-link">Rechner</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Schiefer Wurf</h2>
+            <p>Simulieren Sie Würfe unter verschiedenen Winkeln und Anfangsgeschwindigkeiten.</p>
+        </section>
+
+        <div class="canvas-container">
+            <h3>Wurfbahn-Simulation</h3>
+            <canvas id="wurfCanvas" width="800" height="500"></canvas>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="v0_wurf">Anfangsgeschwindigkeit (m/s): <span id="v0WurfValue">20</span></label>
+                    <input type="range" id="v0_wurf" min="5" max="50" value="20" oninput="updateWurfParameter()">
+                </div>
+
+                <div class="control-group">
+                    <label for="winkel_wurf">Abwurfwinkel (°): <span id="winkelWurfValue">45</span></label>
+                    <input type="range" id="winkel_wurf" min="0" max="90" value="45" oninput="updateWurfParameter()">
+                </div>
+
+                <div class="control-group">
+                    <label for="hoehe_wurf">Abwurfhöhe (m): <span id="hoeheWurfValue">0</span></label>
+                    <input type="range" id="hoehe_wurf" min="0" max="50" value="0" oninput="updateWurfParameter()">
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="startWurf()">Start</button>
+            <button class="btn-primary" onclick="stopWurf()">Stopp</button>
+            <button class="btn-primary" onclick="resetWurf()">Zurücksetzen</button>
+            <button class="btn-primary" onclick="toggleBahn()">Bahnkurve ein/aus</button>
+        </div>
+
+        <div class="calculator-grid" style="margin-top: 2rem;">
+            <div class="calculator-card">
+                <h3>Berechnete Werte</h3>
+                <div id="wurfWerte">
+                    <p>Werte werden berechnet...</p>
+                </div>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Geschwindigkeitskomponenten</h3>
+                <canvas id="geschwindigkeitsVektor" width="350" height="300"></canvas>
+            </div>
+
+            <div class="calculator-card">
+                <h3>Bahnparameter</h3>
+                <div id="bahnParameter">
+                    <p>Wird berechnet...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="formula-list" style="margin-top: 2rem;">
+            <div class="formula-item">
+                <h4>Verwendete Formeln</h4>
+                <div class="formula">
+                    <strong>Geschwindigkeitskomponenten:</strong><br>
+                    v₀ₓ = v₀ · cos(α)<br>
+                    v₀ᵧ = v₀ · sin(α)<br><br>
+                    <strong>Position:</strong><br>
+                    x(t) = v₀ₓ · t<br>
+                    y(t) = h₀ + v₀ᵧ · t − ½ · g · t²<br><br>
+                    <strong>Wurfweite:</strong><br>
+                    x_max = (v₀² · sin(2α)) / g  (bei h₀ = 0)<br><br>
+                    <strong>Maximale Höhe:</strong><br>
+                    y_max = h₀ + (v₀ᵧ²) / (2g)
+                </div>
+                <p class="description">
+                    Beim schiefen Wurf überlagern sich eine gleichförmige Bewegung in x-Richtung
+                    und ein freier Fall in y-Richtung. Die Bahnkurve ist eine Parabel.
+                    Der optimale Wurfwinkel für maximale Weite ist 45° (bei h₀ = 0).
+                </p>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        const g = 9.81;
+        let animationId = null;
+        let v0 = 20;
+        let alpha = 45;
+        let h0 = 0;
+        let x = 0;
+        let y = 0;
+        let time = 0;
+        let bahnpunkte = [];
+        let showBahn = true;
+
+        function updateWurfParameter() {
+            v0 = parseFloat(document.getElementById('v0_wurf').value);
+            alpha = parseFloat(document.getElementById('winkel_wurf').value);
+            h0 = parseFloat(document.getElementById('hoehe_wurf').value);
+
+            document.getElementById('v0WurfValue').textContent = v0.toFixed(0);
+            document.getElementById('winkelWurfValue').textContent = alpha.toFixed(0);
+            document.getElementById('hoeheWurfValue').textContent = h0.toFixed(0);
+
+            berechneWurfParameter();
+        }
+
+        function resetWurf() {
+            stopWurf();
+            x = 0;
+            y = h0;
+            time = 0;
+            bahnpunkte = [];
+            zeichneWurf();
+            berechneWurfParameter();
+        }
+
+        function startWurf() {
+            if (animationId) return;
+
+            const fps = 60;
+            const dt = 1 / fps;
+
+            const rad = alpha * Math.PI / 180;
+            const v0x = v0 * Math.cos(rad);
+            const v0y = v0 * Math.sin(rad);
+
+            animationId = setInterval(() => {
+                time += dt;
+
+                x = v0x * time;
+                y = h0 + v0y * time - 0.5 * g * time * time;
+
+                bahnpunkte.push({ x: x, y: y });
+                if (bahnpunkte.length > 500) bahnpunkte.shift();
+
+                zeichneWurf();
+                zeichneGeschwindigkeitsVektor();
+
+                // Stoppen bei Bodenkontakt
+                if (y <= 0) {
+                    y = 0;
+                    stopWurf();
+                }
+            }, 1000 / fps);
+        }
+
+        function stopWurf() {
+            if (animationId) {
+                clearInterval(animationId);
+                animationId = null;
+            }
+        }
+
+        function toggleBahn() {
+            showBahn = !showBahn;
+            zeichneWurf();
+        }
+
+        function zeichneWurf() {
+            const canvas = document.getElementById('wurfCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Theoretische Werte berechnen
+            const rad = alpha * Math.PI / 180;
+            const v0x = v0 * Math.cos(rad);
+            const v0y = v0 * Math.sin(rad);
+            const flugzeit = (v0y + Math.sqrt(v0y * v0y + 2 * g * h0)) / g;
+            const wurfweite = v0x * flugzeit;
+            const maxHoehe = h0 + (v0y * v0y) / (2 * g);
+
+            // Skalierung
+            const maxX = Math.max(wurfweite * 1.2, 50);
+            const maxY = Math.max(maxHoehe * 1.5, 20);
+            const scaleX = (width - 100) / maxX;
+            const scaleY = (height - 100) / maxY;
+            const offsetX = 50;
+            const offsetY = height - 50;
+
+            // Himmel
+            const gradient = ctx.createLinearGradient(0, 0, 0, offsetY);
+            gradient.addColorStop(0, '#e0f2fe');
+            gradient.addColorStop(1, '#f0f9ff');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, offsetY);
+
+            // Boden
+            ctx.fillStyle = '#78716c';
+            ctx.fillRect(0, offsetY, width, height - offsetY);
+
+            // Theoretische Bahnkurve (gestrichelt)
+            if (showBahn) {
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                for (let t = 0; t <= flugzeit; t += 0.05) {
+                    const xp = v0x * t;
+                    const yp = h0 + v0y * t - 0.5 * g * t * t;
+                    const px = offsetX + xp * scaleX;
+                    const py = offsetY - yp * scaleY;
+                    if (t === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Tatsächliche Bahn (bisherige Flugbahn)
+            if (bahnpunkte.length > 1) {
+                ctx.strokeStyle = '#3b82f6';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                bahnpunkte.forEach((p, i) => {
+                    const px = offsetX + p.x * scaleX;
+                    const py = offsetY - p.y * scaleY;
+                    if (i === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                });
+                ctx.stroke();
+            }
+
+            // Aktuelles Projektil
+            const px = offsetX + x * scaleX;
+            const py = offsetY - y * scaleY;
+
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(px, py, 8, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.strokeStyle = '#991b1b';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Geschwindigkeitsvektoren
+            const vx = v0x;
+            const vy = v0y - g * time;
+            const arrowScale = 3;
+
+            // vx (horizontal)
+            drawArrow(ctx, px, py, px + vx * arrowScale, py, '#10b981');
+
+            // vy (vertikal)
+            drawArrow(ctx, px, py, px, py - vy * arrowScale, '#3b82f6');
+
+            // v_gesamt (resultierend)
+            const vGes = Math.sqrt(vx * vx + vy * vy);
+            const vWinkel = Math.atan2(-vy, vx);
+            drawArrow(ctx, px, py, px + vGes * arrowScale * Math.cos(vWinkel),
+                      py + vGes * arrowScale * Math.sin(vWinkel), '#8b5cf6', 3);
+
+            // Info-Text
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText(`x = ${x.toFixed(1)} m`, 20, 30);
+            ctx.fillText(`y = ${y.toFixed(1)} m`, 20, 50);
+            ctx.fillText(`t = ${time.toFixed(2)} s`, 20, 70);
+            ctx.fillText(`v = ${vGes.toFixed(1)} m/s`, 20, 90);
+
+            // Abwurfpunkt markieren
+            const p0x = offsetX;
+            const p0y = offsetY - h0 * scaleY;
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(p0x, p0y, 6, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        function drawArrow(ctx, fromX, fromY, toX, toY, color, lineWidth = 2) {
+            const headlen = 8;
+            const dx = toX - fromX;
+            const dy = toY - fromY;
+            const angle = Math.atan2(dy, dx);
+
+            if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1) return;
+
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = lineWidth;
+
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6),
+                       toY - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6),
+                       toY - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function zeichneGeschwindigkeitsVektor() {
+            const canvas = document.getElementById('geschwindigkeitsVektor');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            const rad = alpha * Math.PI / 180;
+            const v0x = v0 * Math.cos(rad);
+            const v0y = v0 * Math.sin(rad);
+            const vy = v0y - g * time;
+            const vx = v0x;
+
+            const scale = 4;
+
+            // Achsen
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(20, centerY);
+            ctx.lineTo(width - 20, centerY);
+            ctx.moveTo(centerX, 20);
+            ctx.lineTo(centerX, height - 20);
+            ctx.stroke();
+
+            // vx
+            drawArrow(ctx, centerX, centerY, centerX + vx * scale, centerY, '#10b981', 3);
+            ctx.fillStyle = '#10b981';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`vₓ = ${vx.toFixed(1)} m/s`, centerX + vx * scale / 2, centerY - 10);
+
+            // vy
+            drawArrow(ctx, centerX, centerY, centerX, centerY - vy * scale, '#3b82f6', 3);
+            ctx.fillStyle = '#3b82f6';
+            ctx.fillText(`vᵧ = ${vy.toFixed(1)} m/s`, centerX + 30, centerY - vy * scale / 2);
+
+            // v_ges
+            const vGes = Math.sqrt(vx * vx + vy * vy);
+            drawArrow(ctx, centerX, centerY, centerX + vx * scale, centerY - vy * scale, '#8b5cf6', 3);
+            ctx.fillStyle = '#8b5cf6';
+            ctx.fillText(`v = ${vGes.toFixed(1)} m/s`, centerX + vx * scale / 2 + 20, centerY - vy * scale / 2 - 10);
+
+            // Titel
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '14px Arial';
+            ctx.fillText('Geschwindigkeitsvektoren', width / 2, 20);
+        }
+
+        function berechneWurfParameter() {
+            const rad = alpha * Math.PI / 180;
+            const v0x = v0 * Math.cos(rad);
+            const v0y = v0 * Math.sin(rad);
+
+            // Flugzeit
+            const flugzeit = (v0y + Math.sqrt(v0y * v0y + 2 * g * h0)) / g;
+
+            // Wurfweite
+            const wurfweite = v0x * flugzeit;
+
+            // Maximale Höhe
+            const maxHoehe = h0 + (v0y * v0y) / (2 * g);
+
+            // Steigzeit
+            const steigzeit = v0y / g;
+
+            document.getElementById('wurfWerte').innerHTML = `
+                <div class="result">
+                    <strong>Anfangsgeschwindigkeit:</strong><br>
+                    v₀ = ${v0.toFixed(2)} m/s<br>
+                    v₀ₓ = ${v0x.toFixed(2)} m/s<br>
+                    v₀ᵧ = ${v0y.toFixed(2)} m/s<br><br>
+                    <strong>Winkel:</strong> ${alpha.toFixed(1)}°<br>
+                    <strong>Abwurfhöhe:</strong> ${h0.toFixed(1)} m
+                </div>
+            `;
+
+            document.getElementById('bahnParameter').innerHTML = `
+                <div class="result">
+                    <strong>Wurfweite:</strong> ${wurfweite.toFixed(2)} m<br>
+                    <strong>Maximale Höhe:</strong> ${maxHoehe.toFixed(2)} m<br>
+                    <strong>Steigzeit:</strong> ${steigzeit.toFixed(2)} s<br>
+                    <strong>Gesamte Flugzeit:</strong> ${flugzeit.toFixed(2)} s<br><br>
+                    <em>Optimaler Winkel für max. Weite: 45°</em>
+                </div>
+            `;
+        }
+
+        // Initialisierung
+        updateWurfParameter();
+        resetWurf();
+    </script>
+</body>
+</html>

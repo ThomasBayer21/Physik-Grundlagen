@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktive Formelsammlung | Physik Kursmaterialien</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Interaktive Formelsammlung</h1>
+            <p class="subtitle">Alle wichtigen Formeln mit Erklärungen und Beispielen</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="kinematik.html" class="nav-link">Kinematik</a>
+                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
+                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
+                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="energie.html" class="nav-link">Energie</a>
+                <a href="impuls.html" class="nav-link">Impuls</a>
+                <a href="freierfall.html" class="nav-link">Freier Fall</a>
+                <a href="wurf.html" class="nav-link">Wurf</a>
+                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="formelsammlung.html" class="nav-link active">Formeln</a>
+                <a href="rechner.html" class="nav-link">Rechner</a>
+                <a href="uebungen.html" class="nav-link">Übungen</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>Physik Formelsammlung</h2>
+            <p>Hier finden Sie alle wichtigen Formeln aus der Vorlesung mit Erklärungen und Beispielrechnungen. Klicken Sie auf "Beispiel zeigen" für eine interaktive Demonstration.</p>
+        </section>
+
+        <div class="formula-list">
+            <!-- Fehlerrechnung -->
+            <div class="formula-item">
+                <h4>Fehlerrechnung</h4>
+                <div class="formula">
+                    Absoluter Fehler: f<sub>ABS</sub> = |m<sub>SOLL</sub> − m<sub>FALSCH</sub>|<br>
+                    Relativer Fehler: f<sub>REL</sub> = |f<sub>ABS</sub> / m<sub>SOLL</sub>|
+                </div>
+                <p class="description">
+                    Der absolute Fehler gibt die Differenz zwischen Soll- und Istwert an.
+                    Der relative Fehler ist der Quotient aus absolutem Fehler und Sollwert und wird oft in Prozent angegeben.
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> Sollwert = 100m, Gemessener Wert = 98m<br>
+                    f<sub>ABS</sub> = |100 − 98| = 2m<br>
+                    f<sub>REL</sub> = 2/100 = 0.02 = 2%
+                </div>
+            </div>
+
+            <!-- Geschwindigkeit -->
+            <div class="formula-item">
+                <h4>Geschwindigkeit (gleichförmige Bewegung)</h4>
+                <div class="formula">
+                    v = s / t<br>
+                    s = v · t<br>
+                    t = s / v
+                </div>
+                <p class="description">
+                    Die Geschwindigkeit ist der Quotient aus zurückgelegter Strecke und benötigter Zeit.
+                    Einheit: m/s, km/h (1 m/s = 3.6 km/h)
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> Strecke = 100m, Zeit = 10s<br>
+                    v = 100m / 10s = 10 m/s = 36 km/h
+                </div>
+            </div>
+
+            <!-- Beschleunigung -->
+            <div class="formula-item">
+                <h4>Beschleunigung</h4>
+                <div class="formula">
+                    a = (v − v₀) / t<br>
+                    v = v₀ + a · t<br>
+                    s = v₀ · t + (a/2) · t²
+                </div>
+                <p class="description">
+                    Beschleunigung ist die Änderung der Geschwindigkeit pro Zeit.
+                    Einheit: m/s²
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> v₀ = 0 m/s, v = 50 m/s, t = 5s<br>
+                    a = (50 − 0) / 5 = 10 m/s²<br>
+                    Zurückgelegte Strecke: s = 0 + (10/2) · 5² = 125m
+                </div>
+            </div>
+
+            <!-- Kraft -->
+            <div class="formula-item">
+                <h4>Kraft (Newton's 2. Gesetz)</h4>
+                <div class="formula">
+                    F = m · a
+                </div>
+                <p class="description">
+                    Kraft ist das Produkt aus Masse und Beschleunigung.
+                    Einheit: N (Newton) = kg · m/s²
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> Masse = 10kg, Beschleunigung = 5 m/s²<br>
+                    F = 10kg · 5m/s² = 50 N
+                </div>
+            </div>
+
+            <!-- Gewichtskraft -->
+            <div class="formula-item">
+                <h4>Gewichtskraft</h4>
+                <div class="formula">
+                    F<sub>G</sub> = m · g<br>
+                    g = 9.81 m/s² (Erdbeschleunigung)
+                </div>
+                <p class="description">
+                    Die Gewichtskraft ist die Kraft, mit der ein Körper von der Erde angezogen wird.
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> Masse = 70kg<br>
+                    F<sub>G</sub> = 70kg · 9.81m/s² = 686.7 N
+                </div>
+            </div>
+
+            <!-- Reibungskraft -->
+            <div class="formula-item">
+                <h4>Reibungskraft</h4>
+                <div class="formula">
+                    F<sub>R</sub> = μ · F<sub>N</sub><br>
+                    μ = Reibungskoeffizient<br>
+                    F<sub>N</sub> = Normalkraft
+                </div>
+                <p class="description">
+                    Die Reibungskraft wirkt der Bewegung entgegen und ist proportional zur Normalkraft.
+                    Haftreibung (μ<sub>H</sub>) > Gleitreibung (μ<sub>G</sub>)
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> F<sub>N</sub> = 100N, μ = 0.3<br>
+                    F<sub>R</sub> = 0.3 · 100N = 30 N
+                </div>
+            </div>
+
+            <!-- Zentripetalkraft -->
+            <div class="formula-item">
+                <h4>Zentripetalkraft</h4>
+                <div class="formula">
+                    F<sub>ZP</sub> = m · v² / r = m · ω² · r<br>
+                    ω = Winkelgeschwindigkeit
+                </div>
+                <p class="description">
+                    Die Zentripetalkraft hält einen Körper auf einer Kreisbahn.
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> Masse = 1000kg, v = 20m/s, Radius = 50m<br>
+                    F<sub>ZP</sub> = 1000 · 20² / 50 = 8000 N
+                </div>
+            </div>
+
+            <!-- Arbeit und Energie -->
+            <div class="formula-item">
+                <h4>Arbeit und Energie</h4>
+                <div class="formula">
+                    W = F · s · cos(α)<br>
+                    E<sub>pot</sub> = m · g · h (Potentielle Energie)<br>
+                    E<sub>kin</sub> = (1/2) · m · v² (Kinetische Energie)<br>
+                    E<sub>Spann</sub> = (1/2) · D · s² (Spannenergie)
+                </div>
+                <p class="description">
+                    Arbeit ist das Produkt aus Kraft und Weg. Energie ist die Fähigkeit, Arbeit zu verrichten.
+                    Einheit: J (Joule) = N·m = W·s
+                </p>
+                <div class="example">
+                    <strong>Beispiel potentielle Energie:</strong> m = 5kg, h = 10m<br>
+                    E<sub>pot</sub> = 5 · 9.81 · 10 = 490.5 J<br><br>
+                    <strong>Beispiel kinetische Energie:</strong> m = 5kg, v = 10m/s<br>
+                    E<sub>kin</sub> = 0.5 · 5 · 10² = 250 J
+                </div>
+            </div>
+
+            <!-- Leistung -->
+            <div class="formula-item">
+                <h4>Leistung</h4>
+                <div class="formula">
+                    P = W / t = F · v<br>
+                    Wirkungsgrad: η = P<sub>ab</sub> / P<sub>zu</sub>
+                </div>
+                <p class="description">
+                    Leistung ist Arbeit pro Zeit.
+                    Einheit: W (Watt) = J/s
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> Arbeit = 1000J, Zeit = 10s<br>
+                    P = 1000J / 10s = 100 W<br><br>
+                    <strong>Wirkungsgrad:</strong> P<sub>ab</sub> = 80W, P<sub>zu</sub> = 100W<br>
+                    η = 80/100 = 0.8 = 80%
+                </div>
+            </div>
+
+            <!-- Impuls -->
+            <div class="formula-item">
+                <h4>Impuls und Impulserhaltung</h4>
+                <div class="formula">
+                    p = m · v<br>
+                    Impulserhaltung: p<sub>vor</sub> = p<sub>nach</sub><br>
+                    m₁·v₁ + m₂·v₂ = m₁·u₁ + m₂·u₂
+                </div>
+                <p class="description">
+                    Impuls ist das Produkt aus Masse und Geschwindigkeit.
+                    In einem abgeschlossenen System bleibt der Gesamtimpuls erhalten.
+                    Einheit: kg·m/s
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> m = 2kg, v = 5m/s<br>
+                    p = 2 · 5 = 10 kg·m/s
+                </div>
+            </div>
+
+            <!-- Kreisbewegung -->
+            <div class="formula-item">
+                <h4>Kreisbewegung</h4>
+                <div class="formula">
+                    ω = 2π · f = 2π / T<br>
+                    v = ω · r<br>
+                    a<sub>ZP</sub> = v² / r = ω² · r
+                </div>
+                <p class="description">
+                    ω = Winkelgeschwindigkeit (rad/s)<br>
+                    f = Frequenz (Hz)<br>
+                    T = Periodendauer (s)<br>
+                    r = Radius (m)
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> Frequenz = 2 Hz, Radius = 0.5m<br>
+                    ω = 2π · 2 = 12.57 rad/s<br>
+                    v = 12.57 · 0.5 = 6.28 m/s
+                </div>
+            </div>
+
+            <!-- Harmonische Schwingung -->
+            <div class="formula-item">
+                <h4>Harmonische Schwingung</h4>
+                <div class="formula">
+                    y(t) = a₀ · sin(ωt)<br>
+                    Federschwingung: ω = √(D/m)<br>
+                    Mathematisches Pendel: ω = √(g/l)
+                </div>
+                <p class="description">
+                    a₀ = Amplitude<br>
+                    D = Federkonstante<br>
+                    m = Masse<br>
+                    l = Pendellänge
+                </p>
+                <div class="example">
+                    <strong>Beispiel Federpendel:</strong> D = 100 N/m, m = 1kg<br>
+                    ω = √(100/1) = 10 rad/s<br>
+                    T = 2π/ω = 0.628s
+                </div>
+            </div>
+
+            <!-- Gravitationsgesetz -->
+            <div class="formula-item">
+                <h4>Gravitationsgesetz</h4>
+                <div class="formula">
+                    F = G · (m₁ · m₂) / r²<br>
+                    G = 6.674 · 10⁻¹¹ m³/(kg·s²)
+                </div>
+                <p class="description">
+                    Beschreibt die Anziehungskraft zwischen zwei Massen.
+                    G = Gravitationskonstante
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> Zwei Massen von je 1000kg im Abstand von 10m<br>
+                    F = 6.674·10⁻¹¹ · (1000·1000) / 10² <br>
+                    F = 6.674·10⁻⁷ N
+                </div>
+            </div>
+        </div>
+
+        <section class="intro-section" style="margin-top: 3rem;">
+            <h3>Hinweise</h3>
+            <p>
+                <strong>Einheiten beachten!</strong> Alle Formeln funktionieren nur mit SI-Einheiten (m, kg, s).<br>
+                <strong>Vektoren:</strong> Formeln mit Vektorgrößen (z.B. F⃗, v⃗) berücksichtigen auch die Richtung.<br>
+                <strong>Vorzeichen:</strong> Bei Bewegungen gegen eine Kraft (z.B. Bergauf) ist das Vorzeichen wichtig!
+            </p>
+        </section>
+    </main>
+
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
