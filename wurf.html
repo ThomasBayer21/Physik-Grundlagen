@@ -29,6 +29,8 @@
                 <a href="schwingung.html" class="nav-link">Schwingung</a>
                 <a href="formelsammlung.html" class="nav-link">Formeln</a>
                 <a href="rechner.html" class="nav-link">Rechner</a>
+                <a href="uebungen.html" class="nav-link">Übungen</a>
+                <a href="vorlesungsinhalt.html" class="nav-link">Inhalt</a>
             </div>
         </div>
     </nav>
@@ -37,6 +39,38 @@
         <section class="intro-section">
             <h2>Schiefer Wurf</h2>
             <p>Simulieren Sie Würfe unter verschiedenen Winkeln und Anfangsgeschwindigkeiten.</p>
+
+            <h3 style="margin-top: 2rem;">Theorie: Der ebene Wurf</h3>
+            <p>Der Abwurf erfolgt schräg nach rechts oben unter dem Winkel α zur Horizontalen. Wir rechnen ohne Luftwiderstand, aber die Schwerkraft formt die Flugbahn. Das Koordinatensystem wird so gewählt, dass der Abwurfpunkt im Ursprung liegt.</p>
+
+            <h4 style="margin-top: 1.5rem;">Geschwindigkeitskomponenten</h4>
+            <p>Die Abwurfgeschwindigkeit v₀ wird in horizontale und vertikale Komponenten zerlegt:</p>
+            <p><strong>v₀ₓ = v₀ · cos(α)</strong> (horizontale Komponente)<br>
+            <strong>v₀ᵧ = v₀ · sin(α)</strong> (vertikale Komponente)</p>
+
+            <h4 style="margin-top: 1.5rem;">Bewegungsgleichungen</h4>
+            <p>Die Erdbeschleunigung wirkt nur in y-Richtung: g⃗ = (0, -9.81 m/s²)</p>
+            <p><strong>Geschwindigkeit:</strong><br>
+            vₓ(t) = v₀ₓ = konstant<br>
+            vᵧ(t) = v₀ᵧ - g·t</p>
+            <p><strong>Position:</strong><br>
+            x(t) = v₀ · cos(α) · t<br>
+            y(t) = h₀ + v₀ · sin(α) · t - (g/2) · t²</p>
+
+            <h4 style="margin-top: 1.5rem;">Wichtige Punkte der Flugbahn</h4>
+            <p><strong>Höchster Punkt:</strong> Die vertikale Geschwindigkeitskomponente wird Null<br>
+            t<sub>max</sub> = (v₀·sin α) / g<br>
+            y<sub>max</sub> = h₀ + (v₀²·sin² α) / (2g)</p>
+
+            <p><strong>Wurfweite:</strong> Die vertikale Ortskomponente wird Null (bei h₀ = 0)<br>
+            t<sub>Wurf</sub> = 2·(v₀·sin α) / g<br>
+            x<sub>max</sub> = (2·v₀²·sin α·cos α) / g = (v₀²·sin(2α)) / g</p>
+
+            <p><strong>Maximale Wurfweite:</strong> Bei 45° Abwurfwinkel (wenn h₀ = 0)</p>
+
+            <h4 style="margin-top: 1.5rem;">Bahngleichung</h4>
+            <p>Die Wurfbahn ist eine nach unten geöffnete Parabel:<br>
+            <strong>y = x · tan(α) - x² · g / (2·v₀²·cos²(α))</strong></p>
         </section>
 
         <div class="canvas-container">
@@ -109,6 +143,45 @@
                 </p>
             </div>
         </div>
+
+        <!-- Beispielaufgabe -->
+        <section class="intro-section" style="margin-top: 2rem; background-color: #f8fafc;">
+            <h3>Beispielaufgabe: Kugelwerfer</h3>
+            <p><strong>Aufgabenstellung:</strong> Ein Kugelwerfer stößt eine Kugel in 1,9 m Höhe im Winkel von 50° zur Waagrechten mit 20 m/s Anfangsgeschwindigkeit ab. Wie hoch liegt der höchste Punkt? Wie lange und wie weit fliegt die Kugel?</p>
+
+            <h4>Lösung:</h4>
+            <p><strong>Gegeben:</strong></p>
+            <ul>
+                <li>Anfangsgeschwindigkeit: v₀ = 20 m/s</li>
+                <li>Abwurfwinkel: α = 50°</li>
+                <li>Abwurfhöhe: h₀ = 1,9 m</li>
+                <li>Erdbeschleunigung: g = 9,81 m/s²</li>
+            </ul>
+
+            <p><strong>Schritt 1: Geschwindigkeitskomponenten</strong><br>
+            v₀ₓ = 20 m/s · cos(50°) = 12,86 m/s<br>
+            v₀ᵧ = 20 m/s · sin(50°) = 15,32 m/s</p>
+
+            <p><strong>Schritt 2: Höchster Punkt</strong><br>
+            Am höchsten Punkt gilt vᵧ = 0:<br>
+            t<sub>max</sub> = v₀ᵧ / g = 15,32 / 9,81 = 1,56 s<br>
+            y<sub>max</sub> = h₀ + v₀ᵧ² / (2g) = 1,9 + 15,32² / (2·9,81) = 13,86 m</p>
+
+            <p><strong>Schritt 3: Wurfweite und Flugzeit</strong><br>
+            Beim Auftreffpunkt gilt sᵧ = 0 = h₀ + v₀·sin(α)·t - (g/2)·t²<br>
+            Umformen zur quadratischen Gleichung und Lösen ergibt:<br>
+            t<sub>Wurf</sub> = (v₀·sin α + √(v₀²·sin² α + 2·g·h₀)) / g = 3,24 s<br>
+            x<sub>max</sub> = v₀·cos(α)·t<sub>Wurf</sub> = 12,86 m/s · 3,24 s = 41,67 m</p>
+
+            <p><strong>Antworten:</strong></p>
+            <ul>
+                <li>Höchster Punkt: 13,86 m</li>
+                <li>Flugzeit: 3,24 s</li>
+                <li>Wurfweite: 41,67 m</li>
+            </ul>
+
+            <p><em>Hinweis: Ohne Luftwiderstand kommt es auf die Masse der Kugel nicht an, da die Erdbeschleunigung für alle Massen gleich ist!</em></p>
+        </section>
     </main>
 
 

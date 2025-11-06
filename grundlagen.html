@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grundlagen der Physik | Physik Kursmaterialien</title>
+    <link rel="stylesheet" href="assets/css/minimal.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Kapitel 1: Grundlagen der Physik</h1>
+            <p class="subtitle">Fundamentale Konzepte und Werkzeuge der Physik</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="grundlagen.html" class="nav-link active">Grundlagen</a>
+                <a href="kinematik.html" class="nav-link">Kinematik</a>
+                <a href="dynamik.html" class="nav-link">Dynamik</a>
+                <a href="energie.html" class="nav-link">Energie</a>
+                <a href="impuls.html" class="nav-link">Impuls</a>
+                <a href="schwingung.html" class="nav-link">Schwingungen</a>
+                <a href="formelsammlung.html" class="nav-link">Formeln</a>
+                <a href="rechner.html" class="nav-link">Rechner</a>
+                <a href="uebungen.html" class="nav-link">Übungen</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="intro-section">
+            <h2>1.1 Was ist Physik?</h2>
+            <p><strong>Physik – Alles, was messbar ist.</strong> Physik ist die Grundlage der Technik.</p>
+
+            <h3 style="margin-top: 1.5rem;">Die Anfänge der modernen Physik</h3>
+            <p>Die Erforschung der Natur auf systematische und objektive Weise beginnt in der Neuzeit mit <strong>Galileo Galilei</strong> (1564-1642) und <strong>Isaac Newton</strong> (1643-1727).</p>
+
+            <p><strong>Galileo Galilei</strong> stellt die Fallgesetze auf und macht die Natur zum Maßstab aller Einsichten. Nur die Einheiten legt der Physiker fest, alle Aussagen über das physikalische Verhalten der Natur können im Experiment nachgeprüft werden.</p>
+
+            <p><strong>Isaac Newton</strong> fügt die Kräfte als Ursachen von Bewegungen hinzu und entwickelt die drei Axiome der klassischen Mechanik:</p>
+            <ul style="margin-left: 2rem; margin-top: 1rem;">
+                <li><strong>1. Axiom (Trägheitsprinzip):</strong> Ein Körper verharrt im Zustand der Ruhe oder der gleichförmigen Bewegung, wenn keine Kraft auf ihn einwirkt.</li>
+                <li><strong>2. Axiom (Aktionsprinzip):</strong> Die Änderung der Bewegung ist der einwirkenden Kraft proportional: F = m · a</li>
+                <li><strong>3. Axiom (Reaktionsprinzip):</strong> Kräfte treten immer paarweise auf: actio = reactio</li>
+            </ul>
+
+            <h3 style="margin-top: 1.5rem;">Wissenschaftliche Methode</h3>
+            <p>Die Physik arbeitet mit folgenden Prinzipien:</p>
+            <ul style="margin-left: 2rem;">
+                <li>Systematische Beobachtung</li>
+                <li>Experimentelle Überprüfbarkeit</li>
+                <li>Mathematische Modellbildung</li>
+                <li>Objektive Messbarkeit</li>
+            </ul>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h2>1.2 Physikalische Größen</h2>
+            <p>Physikalische Größen sind messbare Eigenschaften von Objekten oder Zuständen.</p>
+
+            <h3 style="margin-top: 1.5rem;">Aufbau physikalischer Größen</h3>
+            <p>Jede physikalische Größe besteht aus:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    Physikalische Größe = Zahlenwert × Einheit<br><br>
+                    Beispiel: s = 15 m (Strecke = 15 Meter)
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Basisgrößen und abgeleitete Größen</h3>
+            <p><strong>Basisgrößen</strong> sind fundamental definiert (z.B. Länge, Masse, Zeit).</p>
+            <p><strong>Abgeleitete Größen</strong> werden aus Basisgrößen gebildet:</p>
+            <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                <li>Geschwindigkeit: v = s/t → [m/s]</li>
+                <li>Beschleunigung: a = v/t → [m/s²]</li>
+                <li>Kraft: F = m·a → [kg·m/s²] = [N]</li>
+                <li>Energie: E = F·s → [N·m] = [J]</li>
+            </ul>
+
+            <h3 style="margin-top: 1.5rem;">Skalare und Vektoren</h3>
+            <p><strong>Skalare</strong> haben nur einen Betrag: Masse, Zeit, Temperatur, Energie</p>
+            <p><strong>Vektoren</strong> haben Betrag und Richtung: Geschwindigkeit, Kraft, Beschleunigung</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    Vektor: v⃗ = |v⃗| · e⃗<br>
+                    Betrag: |v⃗|, Richtung: e⃗ (Einheitsvektor)
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem;">Interaktive Vektor-Visualisierung</h3>
+            <div class="calculator-card" style="margin-top: 1rem;">
+                <h4>2D-Vektor darstellen</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <div class="control-group" style="margin-bottom: 1rem;">
+                            <label for="vektorX">X-Komponente:</label>
+                            <input type="range" id="vektorX" min="-10" max="10" value="5" step="0.5" oninput="zeichneVektor()">
+                            <span id="vektorXValue">5</span>
+                        </div>
+                        <div class="control-group" style="margin-bottom: 1rem;">
+                            <label for="vektorY">Y-Komponente:</label>
+                            <input type="range" id="vektorY" min="-10" max="10" value="3" step="0.5" oninput="zeichneVektor()">
+                            <span id="vektorYValue">3</span>
+                        </div>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                            <div id="vektorInfo">
+                                <p><strong>Vektor:</strong> v⃗ = (5, 3)</p>
+                                <p><strong>Betrag:</strong> |v⃗| = 5.83</p>
+                                <p><strong>Winkel:</strong> α = 30.96°</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <canvas id="vektorCanvas" width="300" height="300" style="border: 2px solid #e2e8f0; border-radius: 8px; background: white;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h2>1.3 SI-Einheitensystem</h2>
+            <p>Das <strong>Système International d'Unités (SI)</strong> ist das internationale Einheitensystem.</p>
+
+            <h3 style="margin-top: 1.5rem;">Die 7 SI-Basiseinheiten</h3>
+            <div class="calculator-grid" style="margin-top: 1rem;">
+                <div class="calculator-card">
+                    <h4>Länge</h4>
+                    <p><strong>Meter (m)</strong></p>
+                    <p style="font-size: 0.9rem; color: #64748b;">Strecke, die Licht im Vakuum in 1/299.792.458 Sekunde zurücklegt</p>
+                </div>
+                <div class="calculator-card">
+                    <h4>Masse</h4>
+                    <p><strong>Kilogramm (kg)</strong></p>
+                    <p style="font-size: 0.9rem; color: #64748b;">Über Planck-Konstante definiert</p>
+                </div>
+                <div class="calculator-card">
+                    <h4>Zeit</h4>
+                    <p><strong>Sekunde (s)</strong></p>
+                    <p style="font-size: 0.9rem; color: #64748b;">9.192.631.770 Schwingungen des Cäsium-133-Atoms</p>
+                </div>
+                <div class="calculator-card">
+                    <h4>Elektrische Stromstärke</h4>
+                    <p><strong>Ampere (A)</strong></p>
+                    <p style="font-size: 0.9rem; color: #64748b;">Über Elementarladung definiert</p>
+                </div>
+                <div class="calculator-card">
+                    <h4>Temperatur</h4>
+                    <p><strong>Kelvin (K)</strong></p>
+                    <p style="font-size: 0.9rem; color: #64748b;">Über Boltzmann-Konstante definiert</p>
+                </div>
+                <div class="calculator-card">
+                    <h4>Stoffmenge</h4>
+                    <p><strong>Mol (mol)</strong></p>
+                    <p style="font-size: 0.9rem; color: #64748b;">6,022·10²³ Teilchen (Avogadro-Konstante)</p>
+                </div>
+                <div class="calculator-card">
+                    <h4>Lichtstärke</h4>
+                    <p><strong>Candela (cd)</strong></p>
+                    <p style="font-size: 0.9rem; color: #64748b;">Lichtstärke in bestimmte Richtung</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem;">Wichtige abgeleitete Einheiten</h3>
+            <div class="formula-item">
+                <div class="formula">
+                    Kraft: 1 Newton (N) = 1 kg·m/s²<br>
+                    Energie/Arbeit: 1 Joule (J) = 1 N·m = 1 kg·m²/s²<br>
+                    Leistung: 1 Watt (W) = 1 J/s = 1 kg·m²/s³<br>
+                    Druck: 1 Pascal (Pa) = 1 N/m²<br>
+                    Frequenz: 1 Hertz (Hz) = 1/s = 1 s⁻¹
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Präfixe (Vorsätze)</h3>
+            <div class="formula-item">
+                <div class="formula">
+                    Giga (G) = 10⁹ = 1.000.000.000<br>
+                    Mega (M) = 10⁶ = 1.000.000<br>
+                    Kilo (k) = 10³ = 1.000<br>
+                    Hekto (h) = 10² = 100<br>
+                    Deka (da) = 10¹ = 10<br><br>
+                    Dezi (d) = 10⁻¹ = 0,1<br>
+                    Zenti (c) = 10⁻² = 0,01<br>
+                    Milli (m) = 10⁻³ = 0,001<br>
+                    Mikro (µ) = 10⁻⁶ = 0,000001<br>
+                    Nano (n) = 10⁻⁹ = 0,000000001
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem;">Interaktiver Einheitenrechner</h3>
+            <div class="calculator-card" style="margin-top: 1rem;">
+                <h4>Längeneinheiten umrechnen</h4>
+                <div class="control-group">
+                    <label for="lengthInput">Wert eingeben:</label>
+                    <input type="number" id="lengthInput" value="1" step="any" style="width: 150px; padding: 0.5rem; margin-right: 0.5rem;">
+                    <select id="lengthFromUnit" style="padding: 0.5rem;">
+                        <option value="1">Meter (m)</option>
+                        <option value="1000">Kilometer (km)</option>
+                        <option value="0.01">Zentimeter (cm)</option>
+                        <option value="0.001">Millimeter (mm)</option>
+                        <option value="0.000001">Mikrometer (µm)</option>
+                    </select>
+                </div>
+                <div style="margin: 1rem 0;">
+                    <strong>↓ Umrechnung ↓</strong>
+                </div>
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px;">
+                    <div id="lengthResults"></div>
+                </div>
+            </div>
+
+            <div class="calculator-card" style="margin-top: 1rem;">
+                <h4>Zeiteinheiten umrechnen</h4>
+                <div class="control-group">
+                    <label for="timeInput">Wert eingeben:</label>
+                    <input type="number" id="timeInput" value="1" step="any" style="width: 150px; padding: 0.5rem; margin-right: 0.5rem;">
+                    <select id="timeFromUnit" style="padding: 0.5rem;">
+                        <option value="1">Sekunden (s)</option>
+                        <option value="60">Minuten (min)</option>
+                        <option value="3600">Stunden (h)</option>
+                        <option value="86400">Tage (d)</option>
+                    </select>
+                </div>
+                <div style="margin: 1rem 0;">
+                    <strong>↓ Umrechnung ↓</strong>
+                </div>
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px;">
+                    <div id="timeResults"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h2>1.4 Fehlerrechnung</h2>
+            <p>Jede Messung ist mit Unsicherheiten behaftet. Die Fehlerrechnung hilft, diese zu quantifizieren.</p>
+
+            <h3 style="margin-top: 1.5rem;">Absoluter Fehler</h3>
+            <p>Der absolute Fehler ist die Differenz zwischen Soll- und Ist-Wert:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    f<sub>ABS</sub> = |m<sub>SOLL</sub> − m<sub>FALSCH</sub>|
+                </div>
+            </div>
+            <p style="margin-top: 1rem;">Beispiel: Sollwert π = 3,14159..., Messwert = 3,14<br>
+            f<sub>ABS</sub> = |3,14159 − 3,14| = 0,00159</p>
+
+            <h3 style="margin-top: 1.5rem;">Relativer Fehler</h3>
+            <p>Der relative Fehler setzt den absoluten Fehler ins Verhältnis zum Sollwert:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    f<sub>REL</sub> = |f<sub>ABS</sub> / m<sub>SOLL</sub>| ≈ |f<sub>ABS</sub> / m<sub>FALSCH</sub>|<br><br>
+                    In Prozent: f<sub>REL</sub> × 100%
+                </div>
+            </div>
+            <p style="margin-top: 1rem;">Beispiel (fortsetzung):<br>
+            f<sub>REL</sub> = 0,00159 / 3,14159 ≈ 0,000506 ≈ 0,051%</p>
+
+            <h3 style="margin-top: 1.5rem;">Beispielaufgabe</h3>
+            <div class="exercise-card" style="margin-top: 1rem; background-color: #f8fafc; padding: 1.5rem; border-radius: 8px;">
+                <p><strong>Aufgabe:</strong> Welcher absolute und relative Fehler entsteht, wenn man statt π = 3,14159... die Näherung 22/7 verwendet?</p>
+
+                <p style="margin-top: 1rem;"><strong>Lösung:</strong></p>
+                <p>22/7 = 3,142857...</p>
+                <p>f<sub>ABS</sub> = |3,14159265 − 3,142857| ≈ 0,001264</p>
+                <p>f<sub>REL</sub> = 0,001264 / 3,14159265 ≈ 0,000402 ≈ <strong>0,04%</strong> (sehr genau!)</p>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Fehlerfortpflanzung</h3>
+            <p>Bei Berechnungen mit fehlerbehafteten Größen pflanzen sich Fehler fort:</p>
+            <ul style="margin-left: 2rem;">
+                <li><strong>Addition/Subtraktion:</strong> Absolute Fehler addieren sich</li>
+                <li><strong>Multiplikation/Division:</strong> Relative Fehler addieren sich</li>
+                <li><strong>Potenzierung:</strong> Relativer Fehler wird mit Exponent multipliziert</li>
+            </ul>
+
+            <h3 style="margin-top: 2rem;">Interaktiver Fehlerrechner</h3>
+            <div class="calculator-card" style="margin-top: 1rem;">
+                <h4>Absoluten und relativen Fehler berechnen</h4>
+                <div class="control-group" style="margin-bottom: 1rem;">
+                    <label for="sollwert">Sollwert (m<sub>SOLL</sub>):</label>
+                    <input type="number" id="sollwert" value="3.14159265" step="any" style="width: 200px; padding: 0.5rem;">
+                </div>
+                <div class="control-group" style="margin-bottom: 1rem;">
+                    <label for="messwert">Messwert (m<sub>FALSCH</sub>):</label>
+                    <input type="number" id="messwert" value="3.14" step="any" style="width: 200px; padding: 0.5rem;">
+                </div>
+                <button class="btn-primary" onclick="berechneFehler()" style="margin-top: 1rem;">Fehler berechnen</button>
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                    <div id="fehlerResults"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h2>1.5 Formelsprache der Physik</h2>
+            <p>Physikalische Zusammenhänge werden durch mathematische Formeln ausgedrückt.</p>
+
+            <h3 style="margin-top: 1.5rem;">Funktionsschreibweise</h3>
+            <p>Zeitabhängige Größen werden als Funktionen geschrieben:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    s = f(t) = v₀ · t<br>
+                    "Die Strecke s ist eine Funktion der Zeit t"
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Ableitungen</h3>
+            <p>Die Ableitung beschreibt die Änderungsrate:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    Erste Ableitung: ds/dt = ṡ = f'(t)<br>
+                    Zweite Ableitung: d²s/dt² = s̈ = f''(t)<br><br>
+                    Physikalische Bedeutung:<br>
+                    Geschwindigkeit v = ds/dt (1. Ableitung des Ortes)<br>
+                    Beschleunigung a = dv/dt = d²s/dt² (2. Ableitung des Ortes)
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Integration</h3>
+            <p>Die Integration ist die Umkehrung der Ableitung:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    s(t) = ∫ v(t) dt<br>
+                    v(t) = ∫ a(t) dt
+                </div>
+            </div>
+            <p style="margin-top: 1rem;">Beispiel: Konstante Beschleunigung a<br>
+            v(t) = ∫ a dt = a·t + v₀<br>
+            s(t) = ∫ (a·t + v₀) dt = (a/2)·t² + v₀·t + s₀</p>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h2>1.6 Übungsaufgabe: Zeiteinheiten</h2>
+            <div class="exercise-card" style="background-color: #f8fafc; padding: 1.5rem; border-radius: 8px;">
+                <p><strong>Aufgabe:</strong> Die Vorlesung Physik hat am 13. Oktober 2025 um 09:45 Uhr begonnen. Der letzte Vorlesungstag ist der 26. Januar 2026, Vorlesungsende um 13:00 Uhr.</p>
+                <p>Bestimmen Sie:</p>
+                <p>a) Wie lang ist dieser Zeitraum in Tagen?</p>
+                <p>b) Berechnen Sie die Dauer in Stunden.</p>
+                <p>c) Berechnen Sie die Dauer in Minuten.</p>
+
+                <button class="toggle-btn" onclick="toggleSolution('grundlagen-loesung1')" style="margin-top: 1rem;">Lösung anzeigen</button>
+                <div class="solution" id="grundlagen-loesung1" style="margin-top: 1rem;">
+                    <h4>Lösung:</h4>
+                    <p><strong>a) Tage zählen:</strong></p>
+                    <p>Oktober 2025: 13. bis 31. = 19 Tage<br>
+                    November 2025: 30 Tage<br>
+                    Dezember 2025: 31 Tage<br>
+                    Januar 2026: 1. bis 26. = 26 Tage<br>
+                    <strong>Gesamt: 106 Tage</strong></p>
+
+                    <p><strong>b) In Stunden:</strong></p>
+                    <p>Start: 13.10. um 09:45 Uhr, Ende: 26.01. um 13:00 Uhr<br>
+                    Von 09:45 bis 13:00 = 3,25 Stunden mehr<br>
+                    105 Tage × 24 + 3,25 = <strong>2523,25 Stunden</strong></p>
+
+                    <p><strong>c) In Minuten:</strong></p>
+                    <p>2523,25 × 60 = <strong>151.395 Minuten</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem; background-color: #f1f5f9;">
+            <h3>Weiter zu Kapitel 2: Kinematik</h3>
+            <p>Nachdem wir die Grundlagen gelegt haben, geht es weiter mit der Beschreibung von Bewegungen.</p>
+            <p><a href="kinematik.html" style="color: var(--primary-color); font-weight: 600;">→ Zur Kinematik</a></p>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h3>Zusätzliche Materialien</h3>
+            <ul style="margin-left: 2rem;">
+                <li><a href="rechner.html" style="color: var(--primary-color);">Einheitenrechner</a> - Umrechnung zwischen verschiedenen Einheiten</li>
+                <li><a href="uebungen.html" style="color: var(--primary-color);">Übungsaufgaben</a> - Weitere Aufgaben zu den Grundlagen</li>
+                <li><a href="formelsammlung.html" style="color: var(--primary-color);">Formelsammlung</a> - Alle wichtigen Formeln</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023/24 Physik Kurs | Alle Materialien sind urheberrechtlich geschützt</p>
+            <p class="footer-note">Die Verwendung der Materialien dient ausschließlich dem Studium und der Prüfungsvorbereitung</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            const button = solution.previousElementSibling;
+
+            if (solution.classList.contains('visible')) {
+                solution.classList.remove('visible');
+                button.textContent = 'Lösung anzeigen';
+            } else {
+                solution.classList.add('visible');
+                button.textContent = 'Lösung verbergen';
+            }
+        }
+
+        // Einheitenrechner für Längen
+        function updateLengthConversion() {
+            const value = parseFloat(document.getElementById('lengthInput').value);
+            const fromUnit = parseFloat(document.getElementById('lengthFromUnit').value);
+            const valueInMeters = value * fromUnit;
+
+            const results = document.getElementById('lengthResults');
+            results.innerHTML = `
+                <p><strong>${value} ${document.getElementById('lengthFromUnit').options[document.getElementById('lengthFromUnit').selectedIndex].text}</strong> entspricht:</p>
+                <p>• ${(valueInMeters / 1000).toFixed(6)} Kilometer (km)</p>
+                <p>• ${valueInMeters.toFixed(6)} Meter (m)</p>
+                <p>• ${(valueInMeters / 0.01).toFixed(4)} Zentimeter (cm)</p>
+                <p>• ${(valueInMeters / 0.001).toFixed(2)} Millimeter (mm)</p>
+                <p>• ${(valueInMeters / 0.000001).toFixed(2)} Mikrometer (µm)</p>
+            `;
+        }
+
+        // Einheitenrechner für Zeit
+        function updateTimeConversion() {
+            const value = parseFloat(document.getElementById('timeInput').value);
+            const fromUnit = parseFloat(document.getElementById('timeFromUnit').value);
+            const valueInSeconds = value * fromUnit;
+
+            const results = document.getElementById('timeResults');
+            results.innerHTML = `
+                <p><strong>${value} ${document.getElementById('timeFromUnit').options[document.getElementById('timeFromUnit').selectedIndex].text}</strong> entspricht:</p>
+                <p>• ${(valueInSeconds / 86400).toFixed(6)} Tage (d)</p>
+                <p>• ${(valueInSeconds / 3600).toFixed(4)} Stunden (h)</p>
+                <p>• ${(valueInSeconds / 60).toFixed(2)} Minuten (min)</p>
+                <p>• ${valueInSeconds.toFixed(2)} Sekunden (s)</p>
+            `;
+        }
+
+        // Fehlerrechner
+        function berechneFehler() {
+            const soll = parseFloat(document.getElementById('sollwert').value);
+            const falsch = parseFloat(document.getElementById('messwert').value);
+
+            const fAbs = Math.abs(soll - falsch);
+            const fRel = Math.abs(fAbs / soll);
+            const fRelProzent = fRel * 100;
+
+            const results = document.getElementById('fehlerResults');
+            results.innerHTML = `
+                <p><strong>Absoluter Fehler:</strong></p>
+                <p>f<sub>ABS</sub> = |${soll} − ${falsch}| = ${fAbs.toFixed(8)}</p>
+                <p style="margin-top: 1rem;"><strong>Relativer Fehler:</strong></p>
+                <p>f<sub>REL</sub> = ${fAbs.toFixed(8)} / ${soll} = ${fRel.toFixed(8)}</p>
+                <p>f<sub>REL</sub> = <strong>${fRelProzent.toFixed(4)}%</strong></p>
+            `;
+        }
+
+        // Vektor-Visualisierung
+        function zeichneVektor() {
+            const x = parseFloat(document.getElementById('vektorX').value);
+            const y = parseFloat(document.getElementById('vektorY').value);
+
+            document.getElementById('vektorXValue').textContent = x;
+            document.getElementById('vektorYValue').textContent = y;
+
+            const betrag = Math.sqrt(x*x + y*y);
+            const winkel = Math.atan2(y, x) * 180 / Math.PI;
+
+            document.getElementById('vektorInfo').innerHTML = `
+                <p><strong>Vektor:</strong> v⃗ = (${x}, ${y})</p>
+                <p><strong>Betrag:</strong> |v⃗| = ${betrag.toFixed(2)}</p>
+                <p><strong>Winkel:</strong> α = ${winkel.toFixed(2)}°</p>
+            `;
+
+            const canvas = document.getElementById('vektorCanvas');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const scale = 15;
+
+            // Canvas leeren
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Koordinatensystem
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, canvas.height);
+            ctx.stroke();
+
+            // Gitter
+            ctx.strokeStyle = '#f1f5f9';
+            for (let i = -10; i <= 10; i++) {
+                ctx.beginPath();
+                ctx.moveTo(centerX + i * scale, 0);
+                ctx.lineTo(centerX + i * scale, canvas.height);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, centerY - i * scale);
+                ctx.lineTo(canvas.width, centerY - i * scale);
+                ctx.stroke();
+            }
+
+            // Vektor zeichnen
+            const endX = centerX + x * scale;
+            const endY = centerY - y * scale;
+
+            ctx.strokeStyle = '#2563eb';
+            ctx.fillStyle = '#2563eb';
+            ctx.lineWidth = 3;
+
+            // Linie
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            // Pfeilspitze
+            const angle = Math.atan2(y, x);
+            const arrowLength = 10;
+            ctx.beginPath();
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(
+                endX - arrowLength * Math.cos(angle - Math.PI / 6),
+                endY + arrowLength * Math.sin(angle - Math.PI / 6)
+            );
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(
+                endX - arrowLength * Math.cos(angle + Math.PI / 6),
+                endY + arrowLength * Math.sin(angle + Math.PI / 6)
+            );
+            ctx.stroke();
+
+            // Komponenten als gestrichelte Linien
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+
+            // X-Komponente
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(endX, centerY);
+            ctx.stroke();
+
+            // Y-Komponente
+            ctx.beginPath();
+            ctx.moveTo(endX, centerY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+        }
+
+        // Event Listener für Einheitenrechner
+        document.getElementById('lengthInput').addEventListener('input', updateLengthConversion);
+        document.getElementById('lengthFromUnit').addEventListener('change', updateLengthConversion);
+        document.getElementById('timeInput').addEventListener('input', updateTimeConversion);
+        document.getElementById('timeFromUnit').addEventListener('change', updateTimeConversion);
+
+        // Initiale Berechnungen
+        window.addEventListener('load', function() {
+            updateLengthConversion();
+            updateTimeConversion();
+            zeichneVektor();
+        });
+    </script>
+</body>
+</html>

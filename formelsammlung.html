@@ -18,15 +18,12 @@
         <div class="container">
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="grundlagen.html" class="nav-link">Grundlagen</a>
                 <a href="kinematik.html" class="nav-link">Kinematik</a>
-                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
-                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
-                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="dynamik.html" class="nav-link">Dynamik</a>
                 <a href="energie.html" class="nav-link">Energie</a>
                 <a href="impuls.html" class="nav-link">Impuls</a>
-                <a href="freierfall.html" class="nav-link">Freier Fall</a>
-                <a href="wurf.html" class="nav-link">Wurf</a>
-                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="schwingung.html" class="nav-link">Schwingungen</a>
                 <a href="formelsammlung.html" class="nav-link active">Formeln</a>
                 <a href="rechner.html" class="nav-link">Rechner</a>
                 <a href="uebungen.html" class="nav-link">Übungen</a>
@@ -38,6 +35,12 @@
         <section class="intro-section">
             <h2>Physik Formelsammlung</h2>
             <p>Hier finden Sie alle wichtigen Formeln aus der Vorlesung mit Erklärungen und Beispielrechnungen. Klicken Sie auf "Beispiel zeigen" für eine interaktive Demonstration.</p>
+
+            <h3 style="margin-top: 2rem;">Grundlagen der Kinematik</h3>
+            <p><strong>Modellbildung:</strong> Wir betrachten Massepunkte – Gegenstände werden auf einen Punkt reduziert. Uns interessiert nur die Bewegung des Schwerpunktes.</p>
+            <p><strong>Ortsfunktion:</strong> Zu jedem Zeitpunkt t ordnen wir einen Ort s(t) zu: s: t → s(t)</p>
+            <p><strong>Ableitungen:</strong> Geschwindigkeit v = ds/dt (erste Ableitung), Beschleunigung a = dv/dt = d²s/dt² (zweite Ableitung)</p>
+            <p><strong>Integration:</strong> Aus der Beschleunigung können durch Integration die Geschwindigkeit und aus dieser der Weg hergeleitet werden.</p>
         </section>
 
         <div class="formula-list">
@@ -239,6 +242,39 @@
                     <strong>Beispiel:</strong> Frequenz = 2 Hz, Radius = 0.5m<br>
                     ω = 2π · 2 = 12.57 rad/s<br>
                     v = 12.57 · 0.5 = 6.28 m/s
+                </div>
+            </div>
+
+            <!-- Schiefer Wurf -->
+            <div class="formula-item">
+                <h4>Schiefer Wurf</h4>
+                <div class="formula">
+                    Geschwindigkeitskomponenten:<br>
+                    v₀ₓ = v₀ · cos(α)<br>
+                    v₀ᵧ = v₀ · sin(α)<br><br>
+
+                    Wegfunktionen:<br>
+                    x(t) = v₀ · cos(α) · t<br>
+                    y(t) = h₀ + v₀ · sin(α) · t - (g/2) · t²<br><br>
+
+                    Wurfweite (bei h₀ = 0):<br>
+                    x<sub>max</sub> = (v₀² · sin(2α)) / g<br><br>
+
+                    Maximale Höhe:<br>
+                    y<sub>max</sub> = h₀ + (v₀² · sin²(α)) / (2g)<br><br>
+
+                    Bahngleichung:<br>
+                    y = x · tan(α) - x² · g / (2v₀² · cos²(α))
+                </div>
+                <p class="description">
+                    Der schiefe Wurf ist eine Überlagerung von gleichförmiger Bewegung (horizontal)
+                    und freiem Fall (vertikal). Die Wurfparabel ist eine nach unten geöffnete Parabel.
+                    Maximale Wurfweite bei α = 45° (wenn h₀ = 0).
+                </p>
+                <div class="example">
+                    <strong>Beispiel:</strong> v₀ = 20 m/s, α = 45°, h₀ = 0<br>
+                    x<sub>max</sub> = (20² · sin(90°)) / 9,81 = 40,82 m<br>
+                    y<sub>max</sub> = (20² · sin²(45°)) / (2·9,81) = 10,20 m
                 </div>
             </div>
 

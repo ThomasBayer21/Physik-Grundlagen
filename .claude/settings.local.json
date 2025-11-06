@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for file in index.html kinematik.html kinematik-3d.html hypercube-4d.html kraefte.html energie.html impuls.html freierfall.html wurf.html schwingung.html formelsammlung.html rechner.html uebungen.html)",
+      "Bash(do)",
+      "Bash(if ! grep -q \"vorlesungsinhalt.html\" \"$file\")",
+      "Bash(then)",
+      "Bash(echo:*)",
+      "Bash(else)",
+      "Bash(fi)",
+      "Bash(done)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

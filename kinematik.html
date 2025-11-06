@@ -18,17 +18,15 @@
         <div class="container">
             <div class="nav-links">
                 <a href="index.html" class="nav-link">Übersicht</a>
+                <a href="grundlagen.html" class="nav-link">Grundlagen</a>
                 <a href="kinematik.html" class="nav-link active">Kinematik</a>
-                <a href="kinematik-3d.html" class="nav-link">3D-Vektor</a>
-                <a href="hypercube-4d.html" class="nav-link">4D-Würfel</a>
-                <a href="kraefte.html" class="nav-link">Kräfte</a>
+                <a href="dynamik.html" class="nav-link">Dynamik</a>
                 <a href="energie.html" class="nav-link">Energie</a>
                 <a href="impuls.html" class="nav-link">Impuls</a>
-                <a href="freierfall.html" class="nav-link">Freier Fall</a>
-                <a href="wurf.html" class="nav-link">Wurf</a>
-                <a href="schwingung.html" class="nav-link">Schwingung</a>
+                <a href="schwingung.html" class="nav-link">Schwingungen</a>
                 <a href="formelsammlung.html" class="nav-link">Formeln</a>
                 <a href="rechner.html" class="nav-link">Rechner</a>
+                <a href="uebungen.html" class="nav-link">Übungen</a>
             </div>
         </div>
     </nav>
@@ -37,6 +35,16 @@
         <section class="intro-section">
             <h2>Bewegungssimulator</h2>
             <p>Visualisieren Sie verschiedene Bewegungsarten und verstehen Sie die Zusammenhänge zwischen Weg, Geschwindigkeit und Beschleunigung.</p>
+
+            <h3 style="margin-top: 2rem;">Modellbildung: Der Massepunkt</h3>
+            <p>Wir betrachten die Bewegung von Massepunkten. Ein kleines Staubkorn, ein Kieselstein, ein Felsen, ein ganzer Planet oder die Sonne – ganz unterschiedliche Gegenstände werden auf einen Punkt reduziert. Uns interessiert in der Kinematik nur die Bewegung des Schwerpunktes dieser Gegenstände.</p>
+            <p><strong>Das Konzept des Massepunktes:</strong> Mathematisch ist es nur ein Punkt, und der steht in unserem Modell für den ganzen Gegenstand, der eine nichtverschwindende Masse hat. Um die Bewegung zu beschreiben genügt uns die Bewegung des Massenschwerpunktes.</p>
+
+            <h3 style="margin-top: 1.5rem;">Die Ortsfunktion</h3>
+            <p>Wo befindet sich der Massenschwerpunkt zu jedem Zeitpunkt? Das beschreiben wir durch eine Funktion: s = f(t)</p>
+            <p>Zu jedem Zeitpunkt t<sub>i</sub> befindet sich unser Massepunkt an einer bestimmten Stelle. Wir ordnen jedem Zeitpunkt t einen Ort s(t) zu:</p>
+            <p><strong>Ortsfunktion:</strong> s: t → s(t)</p>
+            <p>Die Zuordnung muss eindeutig sein. Zu einem Zeitpunkt kann der Massepunkt immer nur an einem Ort sein.</p>
         </section>
 
         <div class="canvas-container">
@@ -114,10 +122,317 @@
                     Gleichmäßig beschleunigte Bewegung:<br>
                     s(t) = v₀ · t + (a/2) · t²<br>
                     v(t) = v₀ + a · t<br>
-                    a(t) = a (konstant)
+                    a(t) = a (konstant)<br><br>
+
+                    Allgemeine Form mit Anfangsbedingungen:<br>
+                    s(t) = s₀ + v₀·(t - t₀) + (a/2)·(t - t₀)²
                 </div>
             </div>
         </div>
+
+        <!-- Beispielaufgabe -->
+        <section class="intro-section" style="margin-top: 2rem; background-color: #f8fafc;">
+            <h3>Beispielaufgabe: Gleichförmige Bewegung</h3>
+            <p><strong>Aufgabenstellung:</strong> Eine Zirkusartistin lässt sich während ihrer Trapeznummer aus 5,4 m Höhe mit einer mittleren Geschwindigkeit von 0,9 m/s in das Trapeznetz absinken. Sie benötigt für diese Bewegung 4 Sekunden. Welche Höhe hat das Trapeznetz über dem Boden?</p>
+
+            <h4>Lösung:</h4>
+            <p><strong>Gegeben:</strong></p>
+            <ul>
+                <li>Anfangshöhe: s₀ = 5,4 m</li>
+                <li>Geschwindigkeit: v = -0,9 m/s (negativ, da nach unten)</li>
+                <li>Zeit: t = 4 s</li>
+            </ul>
+
+            <p><strong>Gesucht:</strong> Endhöhe s₁</p>
+
+            <p><strong>Formel:</strong> s = s₀ + v·t</p>
+
+            <p><strong>Berechnung:</strong><br>
+            s = 5,4 m + (-0,9 m/s)·4 s<br>
+            s = 5,4 m - 3,6 m<br>
+            s = 1,8 m</p>
+
+            <p><strong>Antwort:</strong> Das Trapeznetz befindet sich 1,8 m über dem Boden.</p>
+        </section>
+
+        <!-- Weitere Theorie-Sektionen -->
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h2>2.2 Geschwindigkeit</h2>
+            <p>Die Geschwindigkeit beschreibt, wie schnell sich die Position eines Massepunktes ändert.</p>
+
+            <h3 style="margin-top: 1.5rem;">Mittlere Geschwindigkeit</h3>
+            <p>Die mittlere Geschwindigkeit ist die Änderung des Ortes pro Zeiteinheit:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    v̄ = Δs / Δt = (s(t₂) - s(t₁)) / (t₂ - t₁) = (s(t₁ + Δt) - s(t₁)) / Δt
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Momentane Geschwindigkeit</h3>
+            <p>Die momentane Geschwindigkeit ist die Ableitung der Ortsfunktion nach der Zeit:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    v = ds/dt = ṡ = f'(t)<br>
+                    Einheit: m/s
+                </div>
+            </div>
+            <p>Die Geschwindigkeit ist die Steigung der Weg-Zeit-Kurve im Diagramm.</p>
+
+            <h3 style="margin-top: 1.5rem;">Vektorielle Darstellung</h3>
+            <p>Die Geschwindigkeit ist ein Vektor mit Betrag und Richtung:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    v⃗ = |v⃗| · e⃗
+                </div>
+            </div>
+            <p>Dabei ist |v⃗| der Betrag (die Schnelligkeit) und e⃗ der Einheitsvektor in Bewegungsrichtung.</p>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h2>2.3 Beschleunigung</h2>
+            <p>Die Beschleunigung beschreibt, wie schnell sich die Geschwindigkeit ändert.</p>
+
+            <h3 style="margin-top: 1.5rem;">Mittlere Beschleunigung</h3>
+            <p>Die mittlere Beschleunigung ist die Änderung der Geschwindigkeit pro Zeiteinheit:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    ā = (v₂ - v₁) / (t₂ - t₁) = Δv / Δt
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Momentane Beschleunigung</h3>
+            <p>Die momentane Beschleunigung ist die Ableitung der Geschwindigkeit (bzw. zweite Ableitung des Ortes):</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    a = dv/dt = d²s/dt² = v̇ = s̈ = f''(t)<br>
+                    Einheit: m/s²
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Vektorielle Beschleunigung</h3>
+            <p>Bei Bewegungen im Raum kann sich sowohl der Betrag als auch die Richtung der Geschwindigkeit ändern:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    a⃗ = dv⃗/dt = d/dt(|v⃗| · e⃗) = (d|v⃗|/dt) · e⃗ + |v⃗| · (de⃗/dt)
+                </div>
+            </div>
+            <p>Der erste Term beschreibt die Änderung der Schnelligkeit (Tangentialbeschleunigung), der zweite Term die Änderung der Richtung (Normalbeschleunigung).</p>
+
+            <h3 style="margin-top: 2rem;">Interaktiver Freier-Fall-Simulator</h3>
+            <div class="calculator-card" style="margin-top: 1rem;">
+                <h4>Freier Fall</h4>
+                <p>Ein Objekt fällt aus einer bestimmten Höhe zur Erde (g = 9,81 m/s²)</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+                    <div>
+                        <div class="control-group" style="margin-bottom: 1rem;">
+                            <label for="fallHoehe">Anfangshöhe h₀ (m):</label>
+                            <input type="range" id="fallHoehe" min="1" max="100" value="20" step="1" oninput="berechneFall()">
+                            <span id="fallHoeheValue">20</span> m
+                        </div>
+                        <div class="control-group" style="margin-bottom: 1rem;">
+                            <label for="fallMasse">Masse m (kg):</label>
+                            <input type="range" id="fallMasse" min="0.1" max="10" value="1" step="0.1" oninput="berechneFall()">
+                            <span id="fallMasseValue">1</span> kg
+                        </div>
+                        <button class="btn-primary" onclick="animiereFall()" style="margin-top: 1rem;">Animation starten</button>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                            <div id="fallResults"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <canvas id="fallCanvas" width="300" height="400" style="border: 2px solid #e2e8f0; border-radius: 8px; background: linear-gradient(to bottom, #e0f2fe 0%, #ffffff 100%);"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h2>2.4 Bewegung im Raum (Vektoren)</h2>
+            <p>Bewegungen finden oft nicht nur in einer Dimension statt, sondern in 2 oder 3 Dimensionen.</p>
+
+            <h3 style="margin-top: 1.5rem;">2D-Vektoren (Ebene Bewegung)</h3>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    Ortsvektor: s⃗ = (sₓ, sᵧ)<br><br>
+                    Geschwindigkeitsvektor: v⃗ = (vₓ, vᵧ) = (ṡₓ, ṡᵧ)<br><br>
+                    Beschleunigungsvektor: a⃗ = (aₓ, aᵧ) = (s̈ₓ, s̈ᵧ)
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">3D-Vektoren (Räumliche Bewegung)</h3>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    Ortsvektor: s⃗ = (sₓ, sᵧ, sᵤ)<br><br>
+                    Geschwindigkeitsvektor: v⃗ = (vₓ, vᵧ, vᵤ)<br><br>
+                    Beschleunigungsvektor: a⃗ = (aₓ, aᵧ, aᵤ)
+                </div>
+            </div>
+
+            <p style="margin-top: 1rem;">Jede Komponente kann unabhängig betrachtet werden. Die Bewegung in x-Richtung ist unabhängig von der Bewegung in y- und z-Richtung.</p>
+
+            <p><a href="kinematik-3d.html" style="color: var(--primary-color); font-weight: 600;">→ Zur 3D-Vektor-Visualisierung</a></p>
+
+            <h3 style="margin-top: 2rem;">2.6 Interaktiver Wurf-Simulator</h3>
+            <div class="calculator-card" style="margin-top: 1rem;">
+                <h4>Schiefer Wurf</h4>
+                <p>Überlagerung von horizontaler gleichförmiger und vertikaler beschleunigter Bewegung</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+                    <div>
+                        <div class="control-group" style="margin-bottom: 1rem;">
+                            <label for="wurfGeschwindigkeit">Anfangsgeschwindigkeit v₀ (m/s):</label>
+                            <input type="range" id="wurfGeschwindigkeit" min="5" max="50" value="20" step="1" oninput="berechneWurf()">
+                            <span id="wurfGeschwindigkeitValue">20</span> m/s
+                        </div>
+                        <div class="control-group" style="margin-bottom: 1rem;">
+                            <label for="wurfWinkel">Abwurfwinkel α (°):</label>
+                            <input type="range" id="wurfWinkel" min="0" max="90" value="45" step="5" oninput="berechneWurf()">
+                            <span id="wurfWinkelValue">45</span>°
+                        </div>
+                        <div class="control-group" style="margin-bottom: 1rem;">
+                            <label for="wurfHoehe">Abwurfhöhe h₀ (m):</label>
+                            <input type="range" id="wurfHoehe" min="0" max="20" value="0" step="1" oninput="berechneWurf()">
+                            <span id="wurfHoeheValue">0</span> m
+                        </div>
+                        <button class="btn-primary" onclick="animiereWurf()" style="margin-top: 1rem;">Animation starten</button>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                            <div id="wurfResults"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <canvas id="wurfCanvas" width="400" height="300" style="border: 2px solid #e2e8f0; border-radius: 8px; background: linear-gradient(to bottom, #dbeafe 0%, #fef3c7 50%, #86efac 100%);"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h2>2.7 Kreisbewegung</h2>
+            <p>Bei der Kreisbewegung bewegt sich ein Massepunkt auf einer Kreisbahn mit konstantem Radius.</p>
+
+            <h3 style="margin-top: 1.5rem;">Winkelgeschwindigkeit</h3>
+            <p>Die Winkelgeschwindigkeit ω gibt an, wie schnell sich der Winkel ändert:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    Winkel: φ = f(t) = φ₀ + ω · (t - t₀)<br><br>
+                    Winkelgeschwindigkeit: ω = dφ/dt = 2π/T = 2πf<br>
+                    Einheit: 1/s = s⁻¹<br><br>
+                    Zusammenhang mit Frequenz: f = 1/T
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Tangentialgeschwindigkeit</h3>
+            <p>Die Tangentialgeschwindigkeit ist die Geschwindigkeit entlang der Kreisbahn:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    v = 2πr/T = ωr
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Zentripetalbeschleunigung</h3>
+            <p>Bei der gleichförmigen Kreisbewegung ändert sich ständig die Richtung der Geschwindigkeit. Dies erfordert eine Beschleunigung zum Mittelpunkt hin:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    a<sub>ZP</sub> = v²/r = ω²r = ωv<br>
+                    Einheit: m/s²
+                </div>
+            </div>
+            <p>Die Zentripetalbeschleunigung zeigt immer zum Kreismittelpunkt und steht senkrecht zur Geschwindigkeit.</p>
+
+            <h3 style="margin-top: 1.5rem;">Winkelbeschleunigung</h3>
+            <p>Falls die Winkelgeschwindigkeit nicht konstant ist:</p>
+            <div class="formula-item" style="margin-top: 1rem;">
+                <div class="formula">
+                    α = d²φ/dt² = ω̇ = φ̈<br>
+                    Einheit: 1/s² = s⁻²
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem;">Interaktive Kreisbewegung-Visualisierung</h3>
+            <div class="calculator-card" style="margin-top: 1rem;">
+                <h4>Gleichförmige Kreisbewegung</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+                    <div>
+                        <div class="control-group" style="margin-bottom: 1rem;">
+                            <label for="kreisRadius">Radius r (m):</label>
+                            <input type="range" id="kreisRadius" min="0.5" max="5" value="2" step="0.1" oninput="berechneKreisbewegung()">
+                            <span id="kreisRadiusValue">2</span> m
+                        </div>
+                        <div class="control-group" style="margin-bottom: 1rem;">
+                            <label for="kreisGeschwindigkeit">Bahngeschwindigkeit v (m/s):</label>
+                            <input type="range" id="kreisGeschwindigkeit" min="0.5" max="10" value="4" step="0.5" oninput="berechneKreisbewegung()">
+                            <span id="kreisGeschwindigkeitValue">4</span> m/s
+                        </div>
+                        <div class="control-group" style="margin-bottom: 1rem;">
+                            <label for="kreisMasse">Masse m (kg):</label>
+                            <input type="range" id="kreisMasse" min="0.1" max="5" value="1" step="0.1" oninput="berechneKreisbewegung()">
+                            <span id="kreisMasseValue">1</span> kg
+                        </div>
+                        <button class="btn-primary" onclick="animiereKreis()" style="margin-top: 1rem;">Animation starten/stoppen</button>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                            <div id="kreisResults"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <canvas id="kreisCanvas" width="350" height="350" style="border: 2px solid #e2e8f0; border-radius: 8px; background: white;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem;">
+            <h2>2.8 Zusammenfassung Kinematik</h2>
+            <p>Die Kinematik gehört zu den umfangreichsten Abschnitten der Vorlesung. Hier werden wichtige Grundlagen der Modellbildung gelegt.</p>
+
+            <h3 style="margin-top: 1.5rem;">Modellbildung</h3>
+            <ul style="margin-left: 2rem;">
+                <li>Reduktion der Bewegung auf einen Massepunkt</li>
+                <li>Beschreibung durch großzügige Näherungen</li>
+                <li>Gleichförmige Bewegung als Gerade</li>
+                <li>Beschleunigte Bewegung als Parabel</li>
+            </ul>
+
+            <h3 style="margin-top: 1.5rem;">Basis-Modelle</h3>
+            <p><strong>Gleichförmige Bewegung:</strong> Perfekt gleichbleibende Geschwindigkeit</p>
+            <div class="formula-item" style="margin-top: 0.5rem;">
+                <div class="formula">
+                    s = v₀ · t<br>
+                    v = v₀ = const.<br>
+                    a = 0
+                </div>
+            </div>
+
+            <p style="margin-top: 1rem;"><strong>Gleichmäßig beschleunigte Bewegung:</strong> Perfekt linear wachsende Geschwindigkeit</p>
+            <div class="formula-item" style="margin-top: 0.5rem;">
+                <div class="formula">
+                    s = v₀·t + (a/2)·t²<br>
+                    v = v₀ + a·t<br>
+                    a = const.
+                </div>
+            </div>
+
+            <h3 style="margin-top: 1.5rem;">Gültigkeitsbereich</h3>
+            <p>Diese Rechnungen sind so lange brauchbar, wie die Abweichungen in der Größenordnung der Messungenauigkeit bleiben. Wir können prinzipiell sehr viele Bewegungen mit diesen beiden Basis-Modellen beschreiben.</p>
+
+            <h3 style="margin-top: 1.5rem;">Erweiterungen</h3>
+            <ul style="margin-left: 2rem;">
+                <li>Bewegungen in 2 oder 3 Raumdimensionen durch Vektorzerlegung</li>
+                <li>Zeitabhängige Beschleunigung durch Integration</li>
+                <li>Komplexe Abläufe durch Zusammensetzen aus Einzelteilen</li>
+                <li>Kombination von geradlinigen und kreisförmigen Bewegungen</li>
+            </ul>
+
+            <h3 style="margin-top: 1.5rem;">Alle Formeln im Überblick</h3>
+            <p><a href="formelsammlung.html" style="color: var(--primary-color); font-weight: 600;">→ Zur vollständigen Formelsammlung</a></p>
+        </section>
+
+        <section class="intro-section" style="margin-top: 2rem; background-color: #f1f5f9;">
+            <h3>Weiterführende Themen</h3>
+            <ul style="margin-left: 2rem;">
+                <li><a href="freierfall.html" style="color: var(--primary-color);">Freier Fall</a> - Eindimensionale Bewegung mit konstanter Beschleunigung g</li>
+                <li><a href="wurf.html" style="color: var(--primary-color);">Schiefer Wurf</a> - Zweidimensionale Bewegung als Überlagerung</li>
+                <li><a href="uebungen.html" style="color: var(--primary-color);">Übungsaufgaben</a> - Aufgaben zur Kinematik mit Lösungen</li>
+            </ul>
+        </section>
     </main>
 
 
@@ -453,6 +768,450 @@
 
         // Initialisierung
         updateSimulation();
+
+        // NEUE SIMULATOREN
+
+        // Freier Fall Simulator
+        let fallAnimationId = null;
+        function berechneFall() {
+            const h0 = parseFloat(document.getElementById('fallHoehe').value);
+            const m = parseFloat(document.getElementById('fallMasse').value);
+            const g = 9.81;
+
+            document.getElementById('fallHoeheValue').textContent = h0;
+            document.getElementById('fallMasseValue').textContent = m;
+
+            const t = Math.sqrt(2 * h0 / g);
+            const v = g * t;
+            const Epot = m * g * h0;
+
+            document.getElementById('fallResults').innerHTML = `
+                <p><strong>Berechnete Werte:</strong></p>
+                <p>• Fallzeit: t = ${t.toFixed(2)} s</p>
+                <p>• Aufprallgeschwindigkeit: v = ${v.toFixed(2)} m/s = ${(v * 3.6).toFixed(2)} km/h</p>
+                <p>• Potentielle Energie: E<sub>pot</sub> = ${Epot.toFixed(2)} J</p>
+                <p>• Kinetische Energie: E<sub>kin</sub> = ${Epot.toFixed(2)} J (beim Aufprall)</p>
+            `;
+
+            zeichneFallCanvas(0, h0);
+        }
+
+        function zeichneFallCanvas(currentTime, h0) {
+            const canvas = document.getElementById('fallCanvas');
+            const ctx = canvas.getContext('2d');
+            const g = 9.81;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const scale = (canvas.height - 40) / h0;
+            const currentHeight = h0 - 0.5 * g * currentTime * currentTime;
+            const ballY = canvas.height - 20 - (currentHeight > 0 ? currentHeight : 0) * scale;
+
+            // Boden
+            ctx.fillStyle = '#8b4513';
+            ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
+
+            // Höhenmarkierung
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            for (let i = 0; i <= h0; i += Math.ceil(h0 / 10)) {
+                const y = canvas.height - 20 - i * scale;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+                ctx.fillStyle = '#64748b';
+                ctx.font = '12px Arial';
+                ctx.fillText(i + ' m', 5, y - 5);
+            }
+            ctx.setLineDash([]);
+
+            // Ball
+            if (currentHeight >= 0) {
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, ballY, 15, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // Geschwindigkeitsvektor (wächst mit Geschwindigkeit)
+                const v = g * currentTime;
+                const arrowLength = v * 3; // Skalierung: 3 Pixel pro m/s
+
+                ctx.strokeStyle = '#2563eb';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(canvas.width / 2, ballY);
+                ctx.lineTo(canvas.width / 2, ballY + arrowLength);
+                ctx.stroke();
+
+                // Pfeilspitze
+                if (arrowLength > 5) { // Nur Pfeilspitze zeichnen wenn Pfeil lang genug
+                    ctx.beginPath();
+                    ctx.moveTo(canvas.width / 2, ballY + arrowLength);
+                    ctx.lineTo(canvas.width / 2 - 7, ballY + arrowLength - 12);
+                    ctx.lineTo(canvas.width / 2 + 7, ballY + arrowLength - 12);
+                    ctx.closePath();
+                    ctx.fillStyle = '#2563eb';
+                    ctx.fill();
+                }
+
+                // Geschwindigkeitswert anzeigen
+                ctx.fillStyle = '#2563eb';
+                ctx.font = 'bold 12px Arial';
+                ctx.fillText(`v = ${v.toFixed(1)} m/s`, canvas.width / 2 + 20, ballY);
+            }
+        }
+
+        function animiereFall() {
+            if (fallAnimationId) {
+                cancelAnimationFrame(fallAnimationId);
+                fallAnimationId = null;
+                return;
+            }
+
+            const h0 = parseFloat(document.getElementById('fallHoehe').value);
+            const g = 9.81;
+            const tMax = Math.sqrt(2 * h0 / g);
+            const startTime = Date.now();
+
+            function animate() {
+                const elapsed = (Date.now() - startTime) / 1000;
+                if (elapsed < tMax) {
+                    zeichneFallCanvas(elapsed, h0);
+                    fallAnimationId = requestAnimationFrame(animate);
+                } else {
+                    zeichneFallCanvas(tMax, h0);
+                    fallAnimationId = null;
+                }
+            }
+
+            animate();
+        }
+
+        // Wurf-Simulator
+        let wurfAnimationId = null;
+        function berechneWurf() {
+            const v0 = parseFloat(document.getElementById('wurfGeschwindigkeit').value);
+            const alpha = parseFloat(document.getElementById('wurfWinkel').value);
+            const h0 = parseFloat(document.getElementById('wurfHoehe').value);
+            const g = 9.81;
+
+            document.getElementById('wurfGeschwindigkeitValue').textContent = v0;
+            document.getElementById('wurfWinkelValue').textContent = alpha;
+            document.getElementById('wurfHoeheValue').textContent = h0;
+
+            const alphaRad = alpha * Math.PI / 180;
+            const v0x = v0 * Math.cos(alphaRad);
+            const v0y = v0 * Math.sin(alphaRad);
+
+            const t1 = v0y / g;
+            const hMax = h0 + (v0y * v0y) / (2 * g);
+            const tGesamt = (v0y + Math.sqrt(v0y * v0y + 2 * g * h0)) / g;
+            const weite = v0x * tGesamt;
+
+            document.getElementById('wurfResults').innerHTML = `
+                <p><strong>Berechnete Werte:</strong></p>
+                <p>• v₀ₓ = ${v0x.toFixed(2)} m/s</p>
+                <p>• v₀ᵧ = ${v0y.toFixed(2)} m/s</p>
+                <p>• Max. Höhe: h<sub>max</sub> = ${hMax.toFixed(2)} m</p>
+                <p>• Flugzeit: t = ${tGesamt.toFixed(2)} s</p>
+                <p>• Wurfweite: x = ${weite.toFixed(2)} m</p>
+            `;
+
+            zeichneWurfCanvas(0, v0, alpha, h0);
+        }
+
+        function zeichneWurfCanvas(currentTime, v0, alpha, h0) {
+            const canvas = document.getElementById('wurfCanvas');
+            const ctx = canvas.getContext('2d');
+            const g = 9.81;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const alphaRad = alpha * Math.PI / 180;
+            const v0x = v0 * Math.cos(alphaRad);
+            const v0y = v0 * Math.sin(alphaRad);
+
+            const tGesamt = (v0y + Math.sqrt(v0y * v0y + 2 * g * h0)) / g;
+            const weite = v0x * tGesamt;
+            const hMax = h0 + (v0y * v0y) / (2 * g);
+
+            const scaleX = (canvas.width - 40) / weite;
+            const scaleY = (canvas.height - 40) / Math.max(hMax, 10);
+
+            // Boden
+            ctx.fillStyle = '#86efac';
+            ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
+
+            // Bahnkurve
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath();
+            for (let t = 0; t <= tGesamt; t += 0.01) {
+                const x = 20 + v0x * t * scaleX;
+                const y = canvas.height - 20 - (h0 + v0y * t - 0.5 * g * t * t) * scaleY;
+                if (t === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Aktueller Ball
+            if (currentTime <= tGesamt) {
+                const x = 20 + v0x * currentTime * scaleX;
+                const h = h0 + v0y * currentTime - 0.5 * g * currentTime * currentTime;
+                const y = canvas.height - 20 - h * scaleY;
+
+                if (h >= 0) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 10, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    // Geschwindigkeitsvektor (wächst mit Geschwindigkeit)
+                    const vx = v0x;
+                    const vy = v0y - g * currentTime;
+                    const vBetrag = Math.sqrt(vx*vx + vy*vy);
+                    const arrowScale = 2; // Skalierung: 2 Pixel pro m/s
+
+                    const arrowX = vx * arrowScale;
+                    const arrowY = -vy * arrowScale; // Negativ wegen Canvas-Koordinaten
+
+                    ctx.strokeStyle = '#2563eb';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + arrowX, y + arrowY);
+                    ctx.stroke();
+
+                    // Pfeilspitze
+                    if (vBetrag > 1) { // Nur Pfeilspitze zeichnen wenn Geschwindigkeit groß genug
+                        const angle = Math.atan2(arrowY, arrowX);
+                        const arrowHeadLength = 8;
+                        const endX = x + arrowX;
+                        const endY = y + arrowY;
+
+                        ctx.beginPath();
+                        ctx.moveTo(endX, endY);
+                        ctx.lineTo(
+                            endX - arrowHeadLength * Math.cos(angle - Math.PI / 6),
+                            endY - arrowHeadLength * Math.sin(angle - Math.PI / 6)
+                        );
+                        ctx.moveTo(endX, endY);
+                        ctx.lineTo(
+                            endX - arrowHeadLength * Math.cos(angle + Math.PI / 6),
+                            endY - arrowHeadLength * Math.sin(angle + Math.PI / 6)
+                        );
+                        ctx.stroke();
+                    }
+
+                    // Geschwindigkeitswert anzeigen
+                    ctx.fillStyle = '#2563eb';
+                    ctx.font = 'bold 11px Arial';
+                    ctx.fillText(`v = ${vBetrag.toFixed(1)} m/s`, x + 15, y - 15);
+                }
+            }
+        }
+
+        function animiereWurf() {
+            if (wurfAnimationId) {
+                cancelAnimationFrame(wurfAnimationId);
+                wurfAnimationId = null;
+                return;
+            }
+
+            const v0 = parseFloat(document.getElementById('wurfGeschwindigkeit').value);
+            const alpha = parseFloat(document.getElementById('wurfWinkel').value);
+            const h0 = parseFloat(document.getElementById('wurfHoehe').value);
+            const g = 9.81;
+
+            const alphaRad = alpha * Math.PI / 180;
+            const v0y = v0 * Math.sin(alphaRad);
+            const tMax = (v0y + Math.sqrt(v0y * v0y + 2 * g * h0)) / g;
+
+            const startTime = Date.now();
+
+            function animate() {
+                const elapsed = (Date.now() - startTime) / 1000;
+                if (elapsed < tMax) {
+                    zeichneWurfCanvas(elapsed, v0, alpha, h0);
+                    wurfAnimationId = requestAnimationFrame(animate);
+                } else {
+                    zeichneWurfCanvas(tMax, v0, alpha, h0);
+                    wurfAnimationId = null;
+                }
+            }
+
+            animate();
+        }
+
+        // Kreisbewegung-Simulator
+        let kreisAnimationId = null;
+        let kreisWinkel = 0;
+        function berechneKreisbewegung() {
+            const r = parseFloat(document.getElementById('kreisRadius').value);
+            const v = parseFloat(document.getElementById('kreisGeschwindigkeit').value);
+            const m = parseFloat(document.getElementById('kreisMasse').value);
+
+            document.getElementById('kreisRadiusValue').textContent = r;
+            document.getElementById('kreisGeschwindigkeitValue').textContent = v;
+            document.getElementById('kreisMasseValue').textContent = m;
+
+            const omega = v / r;
+            const T = (2 * Math.PI) / omega;
+            const f = 1 / T;
+            const aZP = (v * v) / r;
+            const FZP = m * aZP;
+
+            document.getElementById('kreisResults').innerHTML = `
+                <p><strong>Berechnete Werte:</strong></p>
+                <p>• Winkelgeschw.: ω = ${omega.toFixed(2)} rad/s</p>
+                <p>• Periode: T = ${T.toFixed(2)} s</p>
+                <p>• Frequenz: f = ${f.toFixed(2)} Hz</p>
+                <p>• Zentripetalbeschl.: a<sub>ZP</sub> = ${aZP.toFixed(2)} m/s²</p>
+                <p>• Zentripetalkraft: F<sub>ZP</sub> = ${FZP.toFixed(2)} N</p>
+            `;
+
+            zeichneKreisCanvas();
+        }
+
+        function zeichneKreisCanvas() {
+            const canvas = document.getElementById('kreisCanvas');
+            const ctx = canvas.getContext('2d');
+            const r = parseFloat(document.getElementById('kreisRadius').value);
+            const v = parseFloat(document.getElementById('kreisGeschwindigkeit').value);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Dynamische Skalierung: Kreis soll maximal 70% des Canvas einnehmen
+            const maxRadius = Math.min(canvas.width, canvas.height) * 0.35;
+            const scale = maxRadius / r;
+            const radius = r * scale;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Koordinatensystem
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, canvas.height);
+            ctx.stroke();
+
+            // Kreisbahn
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Ball
+            const ballX = centerX + radius * Math.cos(kreisWinkel);
+            const ballY = centerY - radius * Math.sin(kreisWinkel);
+
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, 10, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Geschwindigkeitsvektor (tangential)
+            const vArrowLength = 40; // Feste Pfeil-Länge
+            const vx = -Math.sin(kreisWinkel) * vArrowLength;
+            const vy = Math.cos(kreisWinkel) * vArrowLength;
+
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(ballX, ballY);
+            ctx.lineTo(ballX + vx, ballY + vy);
+            ctx.stroke();
+
+            // Pfeilspitze für Geschwindigkeit
+            const vAngle = Math.atan2(vy, vx);
+            const arrowLen = 8;
+            ctx.beginPath();
+            ctx.moveTo(ballX + vx, ballY + vy);
+            ctx.lineTo(
+                ballX + vx - arrowLen * Math.cos(vAngle - Math.PI / 6),
+                ballY + vy - arrowLen * Math.sin(vAngle - Math.PI / 6)
+            );
+            ctx.moveTo(ballX + vx, ballY + vy);
+            ctx.lineTo(
+                ballX + vx - arrowLen * Math.cos(vAngle + Math.PI / 6),
+                ballY + vy - arrowLen * Math.sin(vAngle + Math.PI / 6)
+            );
+            ctx.stroke();
+
+            // Beschleunigungsvektor (radial, zum Zentrum zeigend)
+            const aZP = (v * v) / r;
+            const aArrowLength = 35; // Feste Pfeil-Länge für Beschleunigung
+            const ax = -Math.cos(kreisWinkel) * aArrowLength;
+            const ay = Math.sin(kreisWinkel) * aArrowLength;
+
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(ballX, ballY);
+            ctx.lineTo(ballX + ax, ballY + ay);
+            ctx.stroke();
+
+            // Pfeilspitze für Beschleunigung
+            const aAngle = Math.atan2(ay, ax);
+            ctx.beginPath();
+            ctx.moveTo(ballX + ax, ballY + ay);
+            ctx.lineTo(
+                ballX + ax - arrowLen * Math.cos(aAngle - Math.PI / 6),
+                ballY + ay - arrowLen * Math.sin(aAngle - Math.PI / 6)
+            );
+            ctx.moveTo(ballX + ax, ballY + ay);
+            ctx.lineTo(
+                ballX + ax - arrowLen * Math.cos(aAngle + Math.PI / 6),
+                ballY + ay - arrowLen * Math.sin(aAngle + Math.PI / 6)
+            );
+            ctx.stroke();
+
+            // Legende
+            ctx.font = '12px Arial';
+            ctx.fillStyle = '#10b981';
+            ctx.fillText('— Geschwindigkeit v', 10, 20);
+            ctx.fillStyle = '#2563eb';
+            ctx.fillText('— Beschleunigung aZP', 10, 35);
+        }
+
+        function animiereKreis() {
+            if (kreisAnimationId) {
+                cancelAnimationFrame(kreisAnimationId);
+                kreisAnimationId = null;
+                return;
+            }
+
+            function animate() {
+                const v = parseFloat(document.getElementById('kreisGeschwindigkeit').value);
+                const r = parseFloat(document.getElementById('kreisRadius').value);
+                const omega = v / r;
+
+                kreisWinkel += omega * 0.05;
+                zeichneKreisCanvas();
+
+                kreisAnimationId = requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        // Initialisierungen für neue Simulatoren
+        window.addEventListener('load', function() {
+            berechneFall();
+            berechneWurf();
+            berechneKreisbewegung();
+        });
     </script>
 </body>
 </html>
