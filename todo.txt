@@ -1,0 +1,11 @@
+Fix:
+kinematik.html
+- Bewegungsdiagramm: Gleichmäßig beschleunigt erreicht maximale geschwindigkeit/bveschleunigt nicht mehr weiter
+- 2.6 Interaktiver Wurf-Simulator: Vektor Richtung stimmt nicht ganz überein
+- 2.7 Kreisbewegung: Länge Beschleunigung aZP stimmt nicht, Länge und Richtung Geschwindigkeit v stimmt nicht
+
+schwingung.html
+- Federpendel: gestrichelte linien sollten die mitte des Würfels und nicht die oberkante referenzieren
+
+grundlagen.html
+- 3d-Vektor Darstellung visualisieren
