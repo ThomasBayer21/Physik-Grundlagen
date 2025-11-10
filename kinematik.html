@@ -648,27 +648,9 @@
             // Geschwindigkeitspfeil
             const arrowLength = Math.min(Math.abs(v) * 5, 100);
             if (v > 0.1) {
-                ctx.strokeStyle = '#10b981';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(x, height - 100);
-                ctx.lineTo(x + arrowLength, height - 100);
-                // Pfeilspitze
-                ctx.lineTo(x + arrowLength - 10, height - 110);
-                ctx.moveTo(x + arrowLength, height - 100);
-                ctx.lineTo(x + arrowLength - 10, height - 90);
-                ctx.stroke();
+                drawArrow(ctx, x, height - 100, x + arrowLength, height - 100, '#10b981', 3);
             } else if (v < -0.1) {
-                ctx.strokeStyle = '#ef4444';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(x, height - 100);
-                ctx.lineTo(x - arrowLength, height - 100);
-                // Pfeilspitze
-                ctx.lineTo(x - arrowLength + 10, height - 110);
-                ctx.moveTo(x - arrowLength, height - 100);
-                ctx.lineTo(x - arrowLength + 10, height - 90);
-                ctx.stroke();
+                drawArrow(ctx, x, height - 100, x - arrowLength, height - 100, '#ef4444', 3);
             }
 
             // Werte anzeigen
@@ -729,6 +711,33 @@
                 clearInterval(animationId);
                 animationId = null;
             }
+        }
+
+        function drawArrow(ctx, fromX, fromY, toX, toY, color, lineWidth = 2) {
+            const headlen = 8;
+            const dx = toX - fromX;
+            const dy = toY - fromY;
+            const angle = Math.atan2(dy, dx);
+
+            if (Math.abs(dx) < 0.1 && Math.abs(dy) < 0.1) return;
+
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = lineWidth;
+
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6),
+                       toY - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6),
+                       toY - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.closePath();
+            ctx.fill();
         }
 
         function berechneWerte() {
@@ -838,22 +847,8 @@
                 const v = g * currentTime;
                 const arrowLength = v * 3; // Skalierung: 3 Pixel pro m/s
 
-                ctx.strokeStyle = '#2563eb';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(canvas.width / 2, ballY);
-                ctx.lineTo(canvas.width / 2, ballY + arrowLength);
-                ctx.stroke();
-
-                // Pfeilspitze
-                if (arrowLength > 5) { // Nur Pfeilspitze zeichnen wenn Pfeil lang genug
-                    ctx.beginPath();
-                    ctx.moveTo(canvas.width / 2, ballY + arrowLength);
-                    ctx.lineTo(canvas.width / 2 - 7, ballY + arrowLength - 12);
-                    ctx.lineTo(canvas.width / 2 + 7, ballY + arrowLength - 12);
-                    ctx.closePath();
-                    ctx.fillStyle = '#2563eb';
-                    ctx.fill();
+                if (arrowLength > 5) { // Nur Pfeil zeichnen wenn lang genug
+                    drawArrow(ctx, canvas.width / 2, ballY, canvas.width / 2, ballY + arrowLength, '#2563eb', 3);
                 }
 
                 // Geschwindigkeitswert anzeigen
@@ -937,81 +932,66 @@
             const weite = v0x * tGesamt;
             const hMax = h0 + (v0y * v0y) / (2 * g);
 
-            const scaleX = (canvas.width - 40) / weite;
-            const scaleY = (canvas.height - 40) / Math.max(hMax, 10);
+            // Skalierung mit Puffer für bessere Darstellung
+            const maxX = Math.max(weite * 1.1, 10);
+            const maxY = Math.max(hMax * 1.2, 10);
+            const scaleX = (canvas.width - 40) / maxX;
+            const scaleY = (canvas.height - 40) / maxY;
 
             // Boden
             ctx.fillStyle = '#86efac';
             ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
 
-            // Bahnkurve
+            // Bahnkurve (nur bis zum Boden)
             ctx.strokeStyle = '#94a3b8';
             ctx.lineWidth = 1;
             ctx.setLineDash([3, 3]);
             ctx.beginPath();
+            let firstPoint = true;
             for (let t = 0; t <= tGesamt; t += 0.01) {
-                const x = 20 + v0x * t * scaleX;
-                const y = canvas.height - 20 - (h0 + v0y * t - 0.5 * g * t * t) * scaleY;
-                if (t === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
+                const h = h0 + v0y * t - 0.5 * g * t * t;
+                if (h >= 0) {
+                    const x = 20 + v0x * t * scaleX;
+                    const y = canvas.height - 20 - h * scaleY;
+                    if (firstPoint) {
+                        ctx.moveTo(x, y);
+                        firstPoint = false;
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
             }
             ctx.stroke();
             ctx.setLineDash([]);
 
             // Aktueller Ball
-            if (currentTime <= tGesamt) {
+            const h = h0 + v0y * currentTime - 0.5 * g * currentTime * currentTime;
+
+            if (currentTime <= tGesamt && h >= 0) {
                 const x = 20 + v0x * currentTime * scaleX;
-                const h = h0 + v0y * currentTime - 0.5 * g * currentTime * currentTime;
                 const y = canvas.height - 20 - h * scaleY;
 
-                if (h >= 0) {
-                    ctx.fillStyle = '#ef4444';
-                    ctx.beginPath();
-                    ctx.arc(x, y, 10, 0, 2 * Math.PI);
-                    ctx.fill();
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(x, y, 10, 0, 2 * Math.PI);
+                ctx.fill();
 
-                    // Geschwindigkeitsvektor (wächst mit Geschwindigkeit)
-                    const vx = v0x;
-                    const vy = v0y - g * currentTime;
-                    const vBetrag = Math.sqrt(vx*vx + vy*vy);
-                    const arrowScale = 2; // Skalierung: 2 Pixel pro m/s
+                // Geschwindigkeitsvektor (wächst mit Geschwindigkeit)
+                const vx = v0x;
+                const vy = v0y - g * currentTime;
+                const vBetrag = Math.sqrt(vx*vx + vy*vy);
+                const arrowScale = 3; // Skalierung: 3 Pixel pro m/s
 
-                    const arrowX = vx * arrowScale;
-                    const arrowY = -vy * arrowScale; // Negativ wegen Canvas-Koordinaten
+                const arrowX = vx * arrowScale;
+                const arrowY = -vy * arrowScale; // Negativ wegen Canvas-Koordinaten
 
-                    ctx.strokeStyle = '#2563eb';
-                    ctx.lineWidth = 3;
-                    ctx.beginPath();
-                    ctx.moveTo(x, y);
-                    ctx.lineTo(x + arrowX, y + arrowY);
-                    ctx.stroke();
+                // Pfeil mit drawArrow zeichnen
+                drawArrow(ctx, x, y, x + arrowX, y + arrowY, '#2563eb', 3);
 
-                    // Pfeilspitze
-                    if (vBetrag > 1) { // Nur Pfeilspitze zeichnen wenn Geschwindigkeit groß genug
-                        const angle = Math.atan2(arrowY, arrowX);
-                        const arrowHeadLength = 8;
-                        const endX = x + arrowX;
-                        const endY = y + arrowY;
-
-                        ctx.beginPath();
-                        ctx.moveTo(endX, endY);
-                        ctx.lineTo(
-                            endX - arrowHeadLength * Math.cos(angle - Math.PI / 6),
-                            endY - arrowHeadLength * Math.sin(angle - Math.PI / 6)
-                        );
-                        ctx.moveTo(endX, endY);
-                        ctx.lineTo(
-                            endX - arrowHeadLength * Math.cos(angle + Math.PI / 6),
-                            endY - arrowHeadLength * Math.sin(angle + Math.PI / 6)
-                        );
-                        ctx.stroke();
-                    }
-
-                    // Geschwindigkeitswert anzeigen
-                    ctx.fillStyle = '#2563eb';
-                    ctx.font = 'bold 11px Arial';
-                    ctx.fillText(`v = ${vBetrag.toFixed(1)} m/s`, x + 15, y - 15);
-                }
+                // Geschwindigkeitswert anzeigen
+                ctx.fillStyle = '#2563eb';
+                ctx.font = 'bold 11px Arial';
+                ctx.fillText(`v = ${vBetrag.toFixed(1)} m/s`, x + 15, y - 15);
             }
         }
 
@@ -1028,18 +1008,22 @@
             const g = 9.81;
 
             const alphaRad = alpha * Math.PI / 180;
-            const v0y = v0 * Math.sin(alphaRad);
-            const tMax = (v0y + Math.sqrt(v0y * v0y + 2 * g * h0)) / g;
+            const v0y_anim = v0 * Math.sin(alphaRad);
+            const tMax = (v0y_anim + Math.sqrt(v0y_anim * v0y_anim + 2 * g * h0)) / g;
 
             const startTime = Date.now();
 
             function animate() {
                 const elapsed = (Date.now() - startTime) / 1000;
-                if (elapsed < tMax) {
+                const h = h0 + v0y_anim * elapsed - 0.5 * g * elapsed * elapsed;
+
+                if (elapsed < tMax && h >= 0) {
                     zeichneWurfCanvas(elapsed, v0, alpha, h0);
                     wurfAnimationId = requestAnimationFrame(animate);
                 } else {
-                    zeichneWurfCanvas(tMax, v0, alpha, h0);
+                    // Zeige finalen Zustand beim Aufprall
+                    const finalTime = Math.min(elapsed, tMax);
+                    zeichneWurfCanvas(finalTime, v0, alpha, h0);
                     wurfAnimationId = null;
                 }
             }
@@ -1074,14 +1058,15 @@
                 <p>• Zentripetalkraft: F<sub>ZP</sub> = ${FZP.toFixed(2)} N</p>
             `;
 
-            zeichneKreisCanvas();
+            zeichneKreisCanvas(m);
         }
 
-        function zeichneKreisCanvas() {
+        function zeichneKreisCanvas(m = null) {
             const canvas = document.getElementById('kreisCanvas');
             const ctx = canvas.getContext('2d');
             const r = parseFloat(document.getElementById('kreisRadius').value);
             const v = parseFloat(document.getElementById('kreisGeschwindigkeit').value);
+            if (m === null) m = parseFloat(document.getElementById('kreisMasse').value);
 
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
@@ -1122,67 +1107,29 @@
             ctx.fill();
 
             // Geschwindigkeitsvektor (tangential)
-            const vArrowLength = 40; // Feste Pfeil-Länge
+            const vScale = 8; // Skalierung: Pixel pro m/s
+            const vArrowLength = v * vScale;
             const vx = -Math.sin(kreisWinkel) * vArrowLength;
-            const vy = Math.cos(kreisWinkel) * vArrowLength;
+            const vy = -Math.cos(kreisWinkel) * vArrowLength;
 
-            ctx.strokeStyle = '#10b981';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(ballX, ballY);
-            ctx.lineTo(ballX + vx, ballY + vy);
-            ctx.stroke();
+            drawArrow(ctx, ballX, ballY, ballX + vx, ballY + vy, '#10b981', 3);
 
-            // Pfeilspitze für Geschwindigkeit
-            const vAngle = Math.atan2(vy, vx);
-            const arrowLen = 8;
-            ctx.beginPath();
-            ctx.moveTo(ballX + vx, ballY + vy);
-            ctx.lineTo(
-                ballX + vx - arrowLen * Math.cos(vAngle - Math.PI / 6),
-                ballY + vy - arrowLen * Math.sin(vAngle - Math.PI / 6)
-            );
-            ctx.moveTo(ballX + vx, ballY + vy);
-            ctx.lineTo(
-                ballX + vx - arrowLen * Math.cos(vAngle + Math.PI / 6),
-                ballY + vy - arrowLen * Math.sin(vAngle + Math.PI / 6)
-            );
-            ctx.stroke();
-
-            // Beschleunigungsvektor (radial, zum Zentrum zeigend)
+            // Zentripetalkraft (radial, zum Zentrum zeigend)
             const aZP = (v * v) / r;
-            const aArrowLength = 35; // Feste Pfeil-Länge für Beschleunigung
-            const ax = -Math.cos(kreisWinkel) * aArrowLength;
-            const ay = Math.sin(kreisWinkel) * aArrowLength;
+            const FZP = m * aZP;
+            const FScale = 10; // Skalierung: Pixel pro Newton
+            const FArrowLength = FZP * FScale;
+            const Fx = -Math.cos(kreisWinkel) * FArrowLength;
+            const Fy = Math.sin(kreisWinkel) * FArrowLength;
 
-            ctx.strokeStyle = '#2563eb';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(ballX, ballY);
-            ctx.lineTo(ballX + ax, ballY + ay);
-            ctx.stroke();
-
-            // Pfeilspitze für Beschleunigung
-            const aAngle = Math.atan2(ay, ax);
-            ctx.beginPath();
-            ctx.moveTo(ballX + ax, ballY + ay);
-            ctx.lineTo(
-                ballX + ax - arrowLen * Math.cos(aAngle - Math.PI / 6),
-                ballY + ay - arrowLen * Math.sin(aAngle - Math.PI / 6)
-            );
-            ctx.moveTo(ballX + ax, ballY + ay);
-            ctx.lineTo(
-                ballX + ax - arrowLen * Math.cos(aAngle + Math.PI / 6),
-                ballY + ay - arrowLen * Math.sin(aAngle + Math.PI / 6)
-            );
-            ctx.stroke();
+            drawArrow(ctx, ballX, ballY, ballX + Fx, ballY + Fy, '#2563eb', 3);
 
             // Legende
             ctx.font = '12px Arial';
             ctx.fillStyle = '#10b981';
             ctx.fillText('— Geschwindigkeit v', 10, 20);
             ctx.fillStyle = '#2563eb';
-            ctx.fillText('— Beschleunigung aZP', 10, 35);
+            ctx.fillText('— Zentripetalkraft FZP', 10, 35);
         }
 
         function animiereKreis() {
